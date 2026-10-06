@@ -1,0 +1,46 @@
+==============================================================================
+FEDHAD CONTROLLED ABLATION - SMOKE RUN
+==============================================================================
+Entry script : /home/tiago/GitHubProjects/fedhad-thesis-2/results_revision_ablation/code/fedhad_ablation.py
+Interpreter  : /home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/bin/python
+Dataset      : CIFAR10 | alphas [0.01, 0.1] | 5 clients | 10 rounds
+Variants     : ['full_fedhad', 'fixed_matched', 'permuted_allocation', 'epoch_only', 'lr_only_matched']
+Seeds        : 2 (42..43)
+Runs planned : 20
+Raw dir      : /home/tiago/GitHubProjects/fedhad-thesis-2/results_revision_ablation/raw/smoke
+NOTE: smoke-test output is written to raw/smoke and is never mixed with official results.
+  [1/20] full_fedhad__CIFAR10__alpha-0.01__seed-42     182s  ok
+  [2/20] fixed_matched__CIFAR10__alpha-0.01__seed-42     154s  ok
+  [3/20] permuted_allocation__CIFAR10__alpha-0.01__seed-42     154s  ok
+  [4/20] epoch_only__CIFAR10__alpha-0.01__seed-42     182s  ok
+  [5/20] lr_only_matched__CIFAR10__alpha-0.01__seed-42     152s  ok
+  [6/20] full_fedhad__CIFAR10__alpha-0.01__seed-43     192s  ok
+  [7/20] fixed_matched__CIFAR10__alpha-0.01__seed-43     162s  ok
+  [8/20] permuted_allocation__CIFAR10__alpha-0.01__seed-43     202s  ok
+  [9/20] epoch_only__CIFAR10__alpha-0.01__seed-43     192s  ok
+  [10/20] lr_only_matched__CIFAR10__alpha-0.01__seed-43     162s  ok
+  [11/20] full_fedhad__CIFAR10__alpha-0.1__seed-42     204s  ok
+  [12/20] fixed_matched__CIFAR10__alpha-0.1__seed-42     194s  ok
+  [13/20] permuted_allocation__CIFAR10__alpha-0.1__seed-42     202s  ok
+  [14/20] epoch_only__CIFAR10__alpha-0.1__seed-42     192s  ok
+  [15/20] lr_only_matched__CIFAR10__alpha-0.1__seed-42     202s  ok
+  [16/20] full_fedhad__CIFAR10__alpha-0.1__seed-43     172s  ok
+  [17/20] fixed_matched__CIFAR10__alpha-0.1__seed-43     163s  ok
+  [18/20] permuted_allocation__CIFAR10__alpha-0.1__seed-43     184s  ok
+  [19/20] epoch_only__CIFAR10__alpha-0.1__seed-43     184s  ok
+  [20/20] lr_only_matched__CIFAR10__alpha-0.1__seed-43     162s  ok
+
+All runs finished in 59.8 min
+
+Fairness verification over 4 (alpha, seed) cells x 5 arms
+  PASS - every cell shares initial weights, partitions, clients, H_k, round count, and respects its budget invariant
+Budget verification table -> /home/tiago/GitHubProjects/fedhad-thesis-2/results_revision_ablation/tables/budget_verification_smoke.csv
+  cells where total epochs match full_fedhad: 14/20
+  |updates - full| : max 3.12%, mean 0.43% (0% for full_fedhad/epoch_only by construction; integer-epoch residual for the others)
+  worst cell       : permuted_allocation alpha=0.01 seed=43 -> -3.12%
+
+Reproducibility check: re-running full_fedhad alpha=0.01 seed=42
+  repeat completed in 182s
+  PASS - all 12 deterministic fields identical across two runs of seed 42 (initial weights, partitions, H_k, allocation, budget)
+
+Smoke test passed. Review tables/budget_verification_smoke.csv, then launch:  python run_ablation.py --official

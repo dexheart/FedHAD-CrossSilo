@@ -1,0 +1,386 @@
+--- ../../results_revision/results_revision_ablation/code/fedhad_ablation.py	2026-09-06 19:20:09.647319026 -0300
++++ fedhad_r2.py	2026-09-30 06:41:50.529768726 -0300
+@@ -1,3 +1,17 @@
++# === R2 MODIFICATION (header) ==============================================
++# Copy of results_revision/results_revision_ablation/code/fedhad_ablation.py for the
++# reviewer-R2 control experiments (step-preserving permutation; tuned static
++# controls). The historical scripts are NOT modified. Every change is marked
++# "R2 MODIFICATION" and listed in fedhad_r2.diff. Behavioural changes relative to
++# the ablation copy:
++#   (a) initial model loaded from a common checkpoint file, SHA-256 verified;
++#   (b) deterministic seeding INSIDE each client fit (Python/NumPy/Torch/CUDA,
++#       DataLoader generator, cuDNN flags), seed = f(global seed, client, round);
++#   (c) local training executes an explicit number of optimizer steps (tau_k),
++#       counted directly; epoch-based arms use tau_k = E_k * b_k, which is the same
++#       computation as the epoch loop;
++#   (d) per-client policy taken from r2_policy.build_plan (arms full_fedhad,
++#       step_permuted_lrclient, step_permuted_lrfollow, static).
+ # -*- coding: utf-8 -*-
+ """
+ Este script implementa uma simulação de Aprendizado Federado utilizando a biblioteca Flower.
+@@ -303,10 +317,12 @@
+ # === Overrides via variáveis de ambiente (usados pelo coordenador run_experiments.py) ===
+ # Se a env não estiver definida, mantém-se o valor padrão acima — rodar o script
+ # isoladamente continua funcionando exatamente como antes.
+-# === ABLATION MODIFICATION (1 of 4) ==========================================
+-# New module holding every change the ablation needs, so that the diff applied to
+-# this copied FedHAD source stays small and auditable. See ablation_policy.py.
+-import ablation_policy
++# === R2 MODIFICATION (import) ================================================
++# New module holding every change the R2 controls need (see r2_policy.py), so the
++# diff applied to this copied source stays small and auditable.
++import importlib
++import json
++import r2_policy
+ 
+ import os as _os
+ 
+@@ -706,8 +722,10 @@
+     FedHAD-results/test1_convergencia/<dataset>-<Mode>/ —, mantendo cada experimento da
+     tese separado e organizado.
+     """
+-    script_dir = Path(__file__).resolve().parent
+-    base = script_dir / "FedHAD-results"
++    # R2 MODIFICATION: the runner points the standard text report to the run's own
++    # output directory (FL_RESULTS_DIR); never into the historical result trees.
++    base = Path(_os.environ.get("FL_RESULTS_DIR", "").strip() or
++                (Path(__file__).resolve().parent / "FedHAD-results"))
+     tag = _os.environ.get("FL_RUN_TAG", "").strip()
+     if tag:
+         base = base / tag
+@@ -1422,6 +1440,63 @@
+             optimizer.step()
+     return epochs
+ 
++# === R2 MODIFICATION: deterministic worker seeding and step-budget training =====
++def seed_worker_process(local_seed: int) -> None:
++    """Seed every RNG of the process that executes this client's fit (Ray worker)."""
++    random.seed(local_seed)
++    np.random.seed(local_seed % (2 ** 32))
++    torch.manual_seed(local_seed)
++    torch.cuda.manual_seed_all(local_seed)
++    # torch.backends.cudnn is a ModuleType subclass (CudnnModule) that Ray's cloudpickle
++    # cannot serialize; naming it in a function shipped to the workers breaks the
++    # client job. Resolve it by name at run time instead (same effect).
++    _cudnn = importlib.import_module("torch.backends." + "cudnn")
++    _cudnn.deterministic = True
++    _cudnn.benchmark = False
++    try:
++        torch.use_deterministic_algorithms(True, warn_only=True)
++    except Exception:
++        pass
++
++
++def train_steps(net, trainloader, steps, learning_rate, use_fedprox=False, mu=0.0,
++                global_params=None):
++    """Run exactly `steps` minibatch optimizer steps, re-iterating the DataLoader
++    (a new shuffle from the same seeded generator) when the budget exceeds one
++    epoch. Per-step computation is identical to train(): SGD momentum 0.9, the same
++    loss and the same proximal term. Returns (steps_executed, examples_processed),
++    both counted directly."""
++    steps = int(steps)
++    if steps <= 0:
++        return 0, 0
++    criterion = torch.nn.CrossEntropyLoss()
++    optimizer = torch.optim.SGD(net.parameters(), lr=learning_rate, momentum=0.9)
++    net.train()
++    done, examples = 0, 0
++    while done < steps:
++        progressed = False
++        for images, labels in trainloader:
++            images, labels = images.to(DEVICE), labels.to(DEVICE)
++            optimizer.zero_grad()
++            outputs = net(images)
++            loss = criterion(outputs, labels)
++            if use_fedprox and global_params is not None:
++                proximal_term = 0.0
++                for local_param, global_param in zip(net.parameters(), global_params):
++                    proximal_term += (local_param - global_param).norm(2) ** 2
++                loss += (mu / 2) * proximal_term
++            loss.backward()
++            optimizer.step()
++            done += 1
++            examples += int(labels.shape[0])
++            progressed = True
++            if done >= steps:
++                break
++        if not progressed:
++            raise RuntimeError("step budget > 0 but the training loader yields no batch")
++    return done, examples
++
++
+ def test(net, testloader):
+     """Função de avaliação para um cliente ou para o servidor."""
+     criterion = torch.nn.CrossEntropyLoss()
+@@ -1704,60 +1779,68 @@
+         heterogeneidade_raw = calcular_heterogeneidade(self.cid, self.trainloader, NUM_CLASSES)
+         heterogeneidade = normalizar_heterogeneidade(heterogeneidade_raw, NUM_CLASSES)
+ 
+-        # === ABLATION MODIFICATION (2 of 4) ==================================
+-        # Original: E_k and LR_k were derived here from H_k, gated by
+-        # USE_DYNAMIC_EPOCHS / USE_DYNAMIC_LR. The ablation needs five different
+-        # (E_k, LR_k) policies over an IDENTICAL federation, so the allocation is
+-        # precomputed once per run by ablation_policy.build_allocation() and only
+-        # looked up here. For FL_ABLATION_VARIANT=full_fedhad the values returned
+-        # are exactly define_epochs_dinamicas(H_k) / define_lr_dinamico(H_k),
+-        # i.e. the original behaviour.
+-        # Read from a plain module-level list rather than calling into
+-        # ablation_policy here: Ray does NOT re-execute this module's top level in
+-        # the worker, so an imported module arrives with empty state, whereas a
+-        # plain list of tuples is serialised by value along with client_fn.
+-        num_epochs, learning_rate = ABLATION_POLICY_TABLE[int(self.cid)]
++        # === R2 MODIFICATION (fit) =========================================
++        # Per-client policy precomputed in the driver (plain dicts, serialised by
++        # value). Seeding is done HERE, in the process that trains, from
++        # (global seed, client id, server round) only, so arms that assign the same
++        # configuration to a client share its stochastic trajectory.
++        _pol = R2_POLICY_TABLE[int(self.cid)]
++        num_steps, learning_rate = int(_pol["tau"]), float(_pol["lr"])
++        _round = int(config.get("server_round", 0))
++        _local_seed = r2_policy.client_round_seed(SEED, self.cid, _round)
++        seed_worker_process(_local_seed)
++        _ds = self.trainloader.dataset
++        if num_steps > 0 and len(_ds) > 0:
++            _loader = DataLoader(_ds, batch_size=BATCH_SIZE, shuffle=True,
++                                 drop_last=self.trainloader.drop_last,
++                                 generator=torch.Generator().manual_seed(_local_seed))
++        else:
++            _loader = None
+ 
+         print(
+-            f"Cliente {self.cid}: HetRaw={heterogeneidade_raw:.4f} | HetNorm={heterogeneidade:.4f} | "
+-            f"Epochs={num_epochs} | LR={learning_rate:.6f} | "
+-            f"variant={ABLATION_VARIANT_NAME} | "
+-            f"FedProx={USE_FEDPROX} (mu={FEDPROX_MU if USE_FEDPROX else 'N/A'})"
++            f"Cliente {self.cid}: HetNorm={heterogeneidade:.4f} | arm={R2_ARM_NAME} | "
++            f"steps={num_steps} (orig={_pol['tau_original']}, donor={_pol['donor']}) | "
++            f"LR={learning_rate:.6f} | FedProx={USE_FEDPROX} | seed={_local_seed}"
+         )
+ 
+-        # Treina o modelo local
+-        actual_epochs = train(
+-            self.net,
+-            self.trainloader,
+-            epochs=num_epochs,
+-            learning_rate=learning_rate,
+-            use_fedprox=USE_FEDPROX,
+-            mu=FEDPROX_MU,
+-            global_params=global_params
+-        )
++        if _loader is not None:
++            steps_executed, examples_processed = train_steps(
++                self.net, _loader, num_steps, learning_rate,
++                use_fedprox=USE_FEDPROX, mu=FEDPROX_MU, global_params=global_params)
++        else:
++            steps_executed, examples_processed = 0, 0
+ 
+         loss, _ = test(self.net, self.valloader)
+         final_parameters = [val.cpu().numpy() for _, val in self.net.state_dict().items()]
+ 
+-        # --- Diagnóstico de drift (só custa algo se FL_DRIFT_CSV estiver definida) ---
+-        minibatch_updates = actual_epochs * len(self.trainloader)
+-
+-        # --- Custo computacional: FLOPs locais (forward+backward) deste cliente nesta rodada ---
+-        num_amostras = len(self.trainloader.dataset)
+-        if FLOPS_PER_SAMPLE_FULL is not None:
+-            flops_locais = int(FLOPS_PER_SAMPLE_FULL * num_amostras * actual_epochs)
+-        else:
+-            flops_locais = 0  # thop indisponível: sinalizado como 0 (relatório indica ausência)
++        num_amostras = len(_ds)
++        n_batches = int(_pol["n_batches"])
++        epochs_equiv = (steps_executed / n_batches) if n_batches > 0 else 0.0
++        fps = FLOPS_PER_SAMPLE_FULL or 0
++        # nominal = campaign convention (n_k x epochs); executed = samples actually fed
++        flops_nominal = int(fps * num_amostras * epochs_equiv)
++        flops_executed = int(fps * examples_processed)
+ 
+         time.sleep(COMMUNICATION_DELAY)
+         return final_parameters, num_amostras, {
+             "loss_after_fit": loss,
+-            "epochs": actual_epochs,
++            "epochs": epochs_equiv,
+             "learning_rate": learning_rate,
+             "cid": str(self.cid),
+-            "flops_locais": flops_locais,
++            "flops_locais": flops_nominal,
+             "H_k": heterogeneidade,
+-            "minibatch_updates": minibatch_updates,
++            "minibatch_updates": steps_executed,
++            "n_batches": n_batches,
++            "E_full": int(_pol["E_full"]),
++            "tau_original": int(_pol["tau_original"]),
++            "tau_received": num_steps,
++            "steps_executed": steps_executed,
++            "examples_processed": examples_processed,
++            "flops_nominal": flops_nominal,
++            "flops_executed": flops_executed,
++            "donor": int(_pol["donor"]),
++            "perm_id": str(_pol["perm_id"]),
++            "local_seed": _local_seed,
+         }
+ 
+     def evaluate(self, parameters, config):
+@@ -1784,7 +1867,7 @@
+         net = get_net().to(DEVICE)
+         net.load_state_dict(OrderedDict({k: torch.tensor(v) for k, v in zip(net.state_dict().keys(), parameters)}))
+         loss, accuracy = test(net, test_loader)
+-        ablation_policy.mark_round()  # ABLATION: wall-clock stamp, one per round
++        r2_policy.mark_round()  # R2: wall-clock stamp, one per round
+         print(f"\n--- Rodada {server_round} - Avaliação Centralizada (Servidor) ---")
+         print(f"Loss (Servidor): {loss:.4f} | Acurácia (Servidor): {accuracy:.4f}")
+         return loss, {"accuracy": accuracy, "loss": loss}
+@@ -1840,60 +1923,58 @@
+ # Carrega os dados antes de definir a estratégia
+ trainloaders, valloaders, testloader = load_data()
+ 
+-# === ABLATION MODIFICATION (3 of 4) ==========================================
+-# Precompute every variant's per-client (E_k, LR_k) allocation once, from the
+-# same H_k the original computes inside fit(), and assert the fairness invariants
+-# (identical total epochs across arms; permuted arm reuses the exact multiset).
+-# H_k is a pure function of the client's partition, which does not change during
+-# training, so evaluating it once here is equivalent to evaluating it per round.
+-_ABLATION_H = [
++# === R2 MODIFICATION (plan) ==================================================
++# H_k is a pure function of the client's partition (static), so evaluating it once
++# here equals evaluating it per round. The plan depends only on pre-training
++# information (partition, H_k, the arm and a recorded permutation seed).
++_R2_H = [
+     normalizar_heterogeneidade(
+         calcular_heterogeneidade(str(_c), _dl, NUM_CLASSES), NUM_CLASSES)
+     for _c, _dl in enumerate(trainloaders)
+ ]
+-ablation_policy.build_allocation(
+-    trainloaders=trainloaders, h_values=_ABLATION_H, seed=SEED,
+-    base_epochs=BASE_EPOCHS, min_epochs=MIN_EPOCHS, base_lr=BASE_LR, min_lr=MIN_LR,
++R2_POLICY_TABLE = r2_policy.build_plan(
++    trainloaders=trainloaders, h_values=_R2_H, seed=SEED, dataset=DATASET, alpha=ALPHA,
+     epochs_fn=define_epochs_dinamicas, lr_fn=define_lr_dinamico,
++    base_epochs=BASE_EPOCHS, min_epochs=MIN_EPOCHS, base_lr=BASE_LR, min_lr=MIN_LR,
+     flops_per_sample_full=FLOPS_PER_SAMPLE_FULL,
+ )
+-# Plain, picklable-by-value structures for the Ray workers (see the note in fit()).
+-ABLATION_POLICY_TABLE = [tuple(x) for x in ablation_policy.variant_epochs_and_lr()]
+-ABLATION_VARIANT_NAME = ablation_policy.active_variant()
+-print(f"[ablation] variant={ABLATION_VARIANT_NAME} | "
+-      f"per-client (epochs, lr)={ABLATION_POLICY_TABLE}")
++R2_ARM_NAME = r2_policy.active_arm()
++print(f"[r2] arm={R2_ARM_NAME} | per-client plan={R2_POLICY_TABLE}")
+ 
+ # Estratégia instrumentada: hereda de FedAvg normalmente, mas grava a telemetria de
+ # diagnóstico de drift (ver drift_telemetry.py) ao agregar cada rodada, sem alterar
+ # em nada o resultado da agregação (no-op quando FL_DRIFT_CSV não está definida).
+ class FedAvgDrift(drift_telemetry.DriftAwareMixin, fl.server.strategy.FedAvg):
+-    pass
++    # === R2 MODIFICATION (fail fast) ===========================================
++    # A round with failed clients would silently continue with fewer (or zero)
++    # updates; abort instead so the runner records the cell as failed immediately.
++    def aggregate_fit(self, server_round, results, failures):
++        if failures:
++            first = failures[0]
++            raise RuntimeError(f"[r2] round {server_round}: {len(failures)} client fit failure(s); "
++                               f"aborting the run. First failure: {first!r}")
++        return super().aggregate_fit(server_round, results, failures)
+ 
+ 
+ _ref_net_drift = get_net()
+ _DRIFT_TRAINABLE_KEYS = drift_telemetry.get_trainable_keys(_ref_net_drift)
+ _DRIFT_STATE_DICT_KEYS = list(_ref_net_drift.state_dict().keys())
+ 
+-# === ABLATION MODIFICATION (4 of 4) ==========================================
+-# The original passes no `initial_parameters`, so Flower requests the initial
+-# global model from ONE RANDOM CLIENT, i.e. from a get_net() executed inside a
+-# Ray worker whose torch RNG is not seeded by the driver's set_global_seed(SEED).
+-# Measured consequence: three runs of the unmodified script with seed 42 produced
+-# three different initial models (round-0 centralised accuracy 0.1000 / 0.1001 /
+-# 0.0983) and round-1 accuracies 3.2 percentage points apart.
+-#
+-# An ablation whose arms start from different random initialisations cannot
+-# attribute a difference to the variant, so the initial model is fixed here,
+-# deterministically, in the driver - exactly as FedAvgM_Final.py and
+-# FedNova_Final.py already do. This is the ONLY behavioural difference between
+-# this copy and the historical implementation, it applies identically to all five
+-# arms including full_fedhad, and it is why the ablation is re-run in full rather
+-# than compared against the historical campaign.
++# === R2 MODIFICATION (initial checkpoint) ====================================
++# The initial global model is loaded from a common checkpoint file shared by every
++# arm and method of a (dataset, seed); its SHA-256 is verified before training.
++# There is no fallback: a missing or mismatching checkpoint aborts the run.
+ set_global_seed(SEED)
+-_ABLATION_INITIAL_NET = get_net()
+-_ABLATION_INITIAL_STATE = _ABLATION_INITIAL_NET.state_dict()
++_R2_INIT_PATH = _os.environ["FL_R2_INIT_CKPT"]
++_R2_INIT_SHA = _os.environ["FL_R2_INIT_SHA256"]
++_R2_INITIAL_NET = get_net()
++_R2_INITIAL_NET.load_state_dict(torch.load(_R2_INIT_PATH, map_location="cpu", weights_only=True), strict=True)
++_R2_INITIAL_STATE = _R2_INITIAL_NET.state_dict()
++_r2_sha = r2_policy.state_dict_sha256(_R2_INITIAL_STATE)
++if _r2_sha != _R2_INIT_SHA:
++    raise RuntimeError(f"initial checkpoint SHA-256 mismatch: {_r2_sha} != {_R2_INIT_SHA}")
+ initial_parameters = fl.common.ndarrays_to_parameters(
+-    [val.cpu().numpy() for _, val in _ABLATION_INITIAL_STATE.items()]
++    [val.cpu().numpy() for _, val in _R2_INITIAL_STATE.items()]
+ )
+ 
+ # Define a estratégia de agregação do servidor (FedAvg)
+@@ -1907,6 +1988,7 @@
+     evaluate_fn=get_evaluate_fn(testloader),  # Avaliação centralizada no servidor
+     evaluate_metrics_aggregation_fn=weighted_average, # Agregação de métricas dos clientes
+     fit_metrics_aggregation_fn=fit_metrics_aggregation_fn, # Telemetria das heurísticas dinâmicas
++    on_fit_config_fn=lambda rnd: {"server_round": int(rnd)},  # R2: round id for worker seeding
+     drift_trainable_keys=_DRIFT_TRAINABLE_KEYS,
+     drift_state_dict_keys=_DRIFT_STATE_DICT_KEYS,
+     drift_method="FedHAD",
+@@ -1975,7 +2057,9 @@
+         # (SIGABRT em WorkerTableData.exit_detail por 'invalid UTF-8' quando há acentos
+         # nos logs). Apenas codificação dos logs: NÃO altera lógica, resultados nem a
+         # concorrência (num_gpus), preservando a comparabilidade entre os métodos.
+-        ray_init_args={"runtime_env": {"env_vars": {"PYTHONUTF8": "1", "PYTHONIOENCODING": "utf-8"}}},
++        ray_init_args={"runtime_env": {"env_vars": {"PYTHONUTF8": "1", "PYTHONIOENCODING": "utf-8",
++                                                    "CUBLAS_WORKSPACE_CONFIG": ":4096:8",  # R2
++                                                    "PYTHONHASHSEED": "0"}}},
+     )
+     elapsed = time.time() - start_time
+ 
+@@ -1992,22 +2076,25 @@
+         if gpu_estimator.util_samples:
+             energy_info["gpu_util_media"] = sum(gpu_estimator.util_samples) / len(gpu_estimator.util_samples)
+ 
+-    # ABLATION: raw per-run artifacts (fingerprint proving the arms are paired,
+-    # plus per-round per-client telemetry). Written only when the runner asks.
+-    _abl_dir = _os.environ.get("FL_ABLATION_RAW_DIR", "").strip()
+-    if _abl_dir:
+-        _abl_fp = ablation_policy.fingerprint(
+-            initial_state_dict=_ABLATION_INITIAL_STATE, dataset=DATASET, alpha=ALPHA,
+-            num_rounds=NUM_ROUNDS, batch_size=BATCH_SIZE,
+-            extra={"fedprox_mu": FEDPROX_MU, "use_fedprox": USE_FEDPROX,
+-                   "base_epochs": BASE_EPOCHS, "min_epochs": MIN_EPOCHS,
+-                   "epochs_decay": EPOCHS_DECAY_FACTOR, "lr_decay": LR_DECAY_FACTOR,
+-                   "base_lr": BASE_LR, "min_lr": MIN_LR,
+-                   "client_setup": CLIENT_SETUP, "device": str(DEVICE)},
+-        )
+-        _abl_tag = ablation_policy.write_run_artifacts(
+-            _abl_dir, _abl_fp, history, fit_metrics_history, elapsed)
+-        print(f"[ablation] raw artifacts written for {_abl_tag}")
++    # R2 MODIFICATION: raw per-run artifacts (fingerprint.json + telemetry.csv).
++    _r2_dir = _os.environ.get("FL_R2_RUN_DIR", "").strip()
++    if _r2_dir:
++        import platform as _pf
++        _hw = {"device": str(DEVICE), "hostname": _pf.node(), "python": _pf.python_version(),
++               "torch": torch.__version__, "flwr": getattr(fl, "__version__", ""),
++               "cuda": torch.version.cuda,
++               "gpu": (torch.cuda.get_device_name(0) if torch.cuda.is_available() else "cpu")}
++        _cfg = json.loads(_os.environ.get("FL_R2_CONFIG_JSON", "{}"))
++        _cfg.update({"use_fedprox": USE_FEDPROX, "fedprox_mu": FEDPROX_MU, "batch_size": BATCH_SIZE,
++                     "num_rounds": NUM_ROUNDS, "client_setup": CLIENT_SETUP, "alpha": ALPHA,
++                     "dataset": DATASET, "base_epochs": BASE_EPOCHS, "min_epochs": MIN_EPOCHS,
++                     "epochs_decay": EPOCHS_DECAY_FACTOR, "lr_decay": LR_DECAY_FACTOR,
++                     "base_lr": BASE_LR, "min_lr": MIN_LR, "comm_delay": COMMUNICATION_DELAY})
++        r2_policy.write_run_artifacts(
++            _r2_dir, config_snapshot=_cfg, init_sha256=_R2_INIT_SHA, init_path=_R2_INIT_PATH,
++            history=history, fit_metrics_history=fit_metrics_history, elapsed=elapsed,
++            hardware=_hw)
++        print(f"[r2] artifacts written to {_r2_dir}")
+ 
+     saved_path = save_simulation_results(history, elapsed, energy_info=energy_info)
+     print(f"\nResultados salvos em: {saved_path}")
+\ No newline at end of file

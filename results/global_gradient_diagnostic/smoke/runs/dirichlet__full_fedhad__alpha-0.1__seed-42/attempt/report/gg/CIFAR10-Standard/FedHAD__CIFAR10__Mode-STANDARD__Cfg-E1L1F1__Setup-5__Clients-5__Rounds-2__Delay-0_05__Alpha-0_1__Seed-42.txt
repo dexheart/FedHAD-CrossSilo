@@ -1,0 +1,125 @@
+=== Resultado da Simulação Federada ===
+Data/Hora: 2026-10-02 19:03:42
+Teste: FedHAD
+Dataset: CIFAR10
+Device: cuda:0
+EXPERIMENT_MODE: STANDARD
+HEURISTICS_SIGNATURE: E1L1F1
+
+--- Parâmetros ---
+EXPERIMENT_TAG: gg
+SEED: 42
+CLIENT_SETUP: 5
+NUM_CLIENTS: 5
+CLIENT_GPU_FRACTION: 0.2
+NUM_ROUNDS: 2
+BATCH_SIZE: 32
+COMMUNICATION_DELAY: 0.05
+PARTITIONING: DIRICHLET (alpha=0.1)
+ALPHA: 0.1
+NUM_CLASSES: 10
+BASE_EPOCHS: 5
+MIN_EPOCHS: 2
+EPOCHS_DECAY_FACTOR: 3.0
+LR_DECAY_FACTOR: 1.5
+USE_DYNAMIC_EPOCHS: True
+USE_DYNAMIC_LR: True
+USE_FEDPROX: True
+BASE_LR: 0.01
+MIN_LR: 0.001
+FEDPROX_MU: 0.01
+Tempo total (s): 57.79
+
+--- History (loss, distributed) ---
+[(1, 2.2057486282531467), (2, 1.6592954688723955)]
+
+--- History (loss, centralized) ---
+[(0, 2.3033205837249757), (1, 2.2043358333587646), (2, 1.6594701761245727)]
+
+--- History (metrics, distributed, evaluate) ---
+{'accuracy': [(1, 0.20632379427656594), (2, 0.46267760656393836)],
+ 'loss': [(1, 2.2057486282531467), (2, 1.6592954688723955)]}
+
+--- History (metrics, centralized) ---
+{'accuracy': [(0, 0.1036), (1, 0.2005), (2, 0.4547)],
+ 'loss': [(0, 2.3033205837249757),
+          (1, 2.2043358333587646),
+          (2, 1.6594701761245727)]}
+
+--- History (metrics, distributed, fit) ---
+{'avg_epochs_weighted': [(1, 3.5719174277270405), (2, 3.5719174277270405)],
+ 'avg_flops_per_client_round': [(1, 5815656711168.0), (2, 5815656711168.0)],
+ 'avg_lr_weighted': [(1, 0.005887198195350915), (2, 0.005887198195350915)],
+ 'total_flops_round': [(1, 29078283555840), (2, 29078283555840)]}
+
+--- Estatísticas de Heurísticas Dinâmicas ---
+Épocas (todas as observações cliente-rodada):
+  Média ponderada por amostras: 3.57
+  Média aritmética simples: 3.40
+  Mínimo: 3 | Máximo: 4 | Mediana: 3.00 | Desvio padrão: 0.49
+  Distribuição: {3: 6, 4: 4}
+
+Learning Rate (todas as observações cliente-rodada):
+  Média ponderada por amostras: 0.005887
+  Mínimo: 0.004499 | Máximo: 0.006376
+  Mediana: 0.005653 | Desvio padrão: 0.000667
+
+--- Histórico Adaptativo por Rodada ---
+Rodada 1: avg_epochs=3.57, avg_lr=0.005887
+Rodada 2: avg_epochs=3.57, avg_lr=0.005887
+
+--- Estatísticas por Cliente ---
+Cliente 0: amostras=9233, avg_epochs=4.00, avg_lr=0.006129
+Cliente 1: amostras=16505, avg_epochs=4.00, avg_lr=0.006376
+Cliente 2: amostras=7680, avg_epochs=3.00, avg_lr=0.005238
+Cliente 3: amostras=2252, avg_epochs=3.00, avg_lr=0.004499
+Cliente 4: amostras=9333, avg_epochs=3.00, avg_lr=0.005653
+
+--- Estatísticas de Custo Computacional (FLOPs) ---
+FLOPS por amostra (forward apenas): 6.030e+07 (60.3 MFLOPs)
+FLOPS por amostra (forward + backward, fator 3x): 1.809e+08 (180.9 MFLOPs)
+(Convenção: thop mede MACs; FLOPs = 2 × MACs; passe completo = 3 × forward.)
+
+Total acumulado da execução: 58.157 TFLOPs
+Média por rodada: 29.078 TFLOPs
+Min/Max por rodada: 29.078 TFLOPs / 29.078 TFLOPs | Desvio padrão: 0 FLOPs
+
+FLOPs por cliente (acumulado em 2 rodadas):
+  Cliente 0: 13.362 TFLOPs (9233 amostras × ~4 épocas × 2 rodadas)
+  Cliente 1: 23.885 TFLOPs (16505 amostras × ~4 épocas × 2 rodadas)
+  Cliente 2: 8.336 TFLOPs (7680 amostras × ~3 épocas × 2 rodadas)
+  Cliente 3: 2.444 TFLOPs (2252 amostras × ~3 épocas × 2 rodadas)
+  Cliente 4: 10.130 TFLOPs (9333 amostras × ~3 épocas × 2 rodadas)
+
+Eficiência: 0.4547 acurácia / 58.157 TFLOPs = 0.0078 (acc/TFLOP)
+           = 0.78 pontos percentuais por TFLOP
+
+--- Rounds-to-Target (Acurácia Centralizada) ---
+Target 40%: round 2
+Target 50%: não atingido em 2 rounds
+Target 60%: não atingido em 2 rounds
+Target 70%: não atingido em 2 rounds
+Target 80%: não atingido em 2 rounds
+Target 90%: não atingido em 2 rounds
+
+--- FLOPs-to-Target ---
+Target 40%: 58.157 TFLOPs (round 2)
+Target 50%: não atingido em 2 rounds
+Target 60%: não atingido em 2 rounds
+Target 70%: não atingido em 2 rounds
+Target 80%: não atingido em 2 rounds
+Target 90%: não atingido em 2 rounds
+
+--- Custo de Comunicação ---
+Tamanho do modelo: 2.669 MB (667178 parâmetros)
+Bytes por rodada: 26.687 MB (5 clientes × 2 × 2.669 MB)
+Bytes acumulados na execução: 53.374 MB (2 rounds)
+Bytes até atingir target 40%: 53.374 MB (round 2)
+Bytes até atingir target 50%: não atingido em 2 rounds
+Bytes até atingir target 60%: não atingido em 2 rounds
+Bytes até atingir target 70%: não atingido em 2 rounds
+Bytes até atingir target 80%: não atingido em 2 rounds
+Bytes até atingir target 90%: não atingido em 2 rounds
+
+--- Consumo de Energia (CodeCarbon) ---
+Medição de energia desabilitada (USE_ENERGY_TRACKING = False).

@@ -1,0 +1,316 @@
+--- ../../reviewer_r2_controls/code/fedhad_r2.py	2026-09-30 06:41:50.529768726 -0300
++++ fedhad_gg.py	2026-10-02 18:58:55.435526984 -0300
+@@ -1,3 +1,24 @@
++# === GG MODIFICATION (header) ==============================================
++# Global-gradient diagnostic battery. This file is fedhad_r2.py (reviewer_r2_controls/code)
++# with ONLY the blocks marked "GG MODIFICATION" changed (see fedhad_gg.diff):
++#   (a) import: unmodified r2_policy / drift_telemetry from reviewer_r2_controls/code,
++#       gg_policy / gg_diag from this directory;
++#   (b) partition: FL_GG_PARTITION=dirichlet (the paper's, unmodified) or equal
++#       (equal-size label skew, gg_policy.equal_size_label_skew);
++#   (c) plan: per-client (steps, lr) from gg_policy.build_plan (arms full_fedhad,
++#       inv_epochs, fedprox_default, fedprox_tuned); FL_GG_PLAN_ONLY=<path> writes every
++#       arm's plan and exits before any training (runner dry run);
++#   (d) fit: training identical to train_steps, with a read-only callback at every
++#       epoch boundary that records the alignment of that epoch with -g_-k;
++#   (e) server: before each round the strategy computes g_k, g and g_-k at w^t and, after
++#       it, the alignment of each returned update; the centralized evaluation also
++#       records the confusion matrix. None of these change the aggregation or training.
++# Everything else (H_k, checkpoint, worker seeding, step-budget training, FLOP
++# accounting, telemetry, fail-fast) is the R2 code, byte for byte.
++import sys as _sys
++from pathlib import Path as _Path
++_sys.path.insert(0, str(_Path(__file__).resolve().parents[2] / "reviewer_r2_controls" / "code"))
++_sys.path.insert(0, str(_Path(__file__).resolve().parent))
+ # === R2 MODIFICATION (header) ==============================================
+ # Copy of results_revision/results_revision_ablation/code/fedhad_ablation.py for the
+ # reviewer-R2 control experiments (step-preserving permutation; tuned static
+@@ -322,7 +343,10 @@
+ # diff applied to this copied source stays small and auditable.
+ import importlib
+ import json
++# === GG MODIFICATION (import) =============================================
+ import r2_policy
++import gg_policy
++import gg_diag
+ 
+ import os as _os
+ 
+@@ -1497,6 +1521,46 @@
+     return done, examples
+ 
+ 
++# === GG MODIFICATION (epoch callback) =======================================
++def train_steps_gg(net, trainloader, steps, learning_rate, use_fedprox=False, mu=0.0,
++                   global_params=None, epoch_len=0, on_epoch=None):
++    """train_steps with a read-only callback after every `epoch_len` steps. The
++    optimizer, loss, proximal term and data order are those of train_steps; the
++    callback only reads the parameters."""
++    steps = int(steps)
++    if steps <= 0:
++        return 0, 0
++    criterion = torch.nn.CrossEntropyLoss()
++    optimizer = torch.optim.SGD(net.parameters(), lr=learning_rate, momentum=0.9)
++    net.train()
++    done, examples = 0, 0
++    while done < steps:
++        progressed = False
++        for images, labels in trainloader:
++            images, labels = images.to(DEVICE), labels.to(DEVICE)
++            optimizer.zero_grad()
++            outputs = net(images)
++            loss = criterion(outputs, labels)
++            if use_fedprox and global_params is not None:
++                proximal_term = 0.0
++                for local_param, global_param in zip(net.parameters(), global_params):
++                    proximal_term += (local_param - global_param).norm(2) ** 2
++                loss += (mu / 2) * proximal_term
++            loss.backward()
++            optimizer.step()
++            done += 1
++            examples += int(labels.shape[0])
++            progressed = True
++            if on_epoch is not None and epoch_len > 0 and done % epoch_len == 0:
++                on_epoch(done // epoch_len)
++                net.train()
++            if done >= steps:
++                break
++        if not progressed:
++            raise RuntimeError("step budget > 0 but the training loader yields no batch")
++    return done, examples
++
++
+ def test(net, testloader):
+     """Função de avaliação para um cliente ou para o servidor."""
+     criterion = torch.nn.CrossEntropyLoss()
+@@ -1712,7 +1776,13 @@
+     testset = dataset_class("./data", train=False, download=True, transform=trf)
+ 
+     print(f"Dividindo o dataset usando a distribuição de Dirichlet com alpha={ALPHA}.")
+-    datasets = dirichlet_split_noniid(trainset, n_clients=NUM_CLIENTS, alpha=ALPHA)
++    # === GG MODIFICATION (partition) ========================================
++    if gg_policy.active_partition() == "equal":
++        print(f"[gg] equal-size label-skew partition: {gg_policy.EQUAL_N} samples per client")
++        datasets = [Subset(trainset, idx) for idx in gg_policy.equal_size_label_skew(
++            trainset.targets, NUM_CLIENTS, ALPHA, gg_policy.EQUAL_N, SEED)]
++    else:
++        datasets = dirichlet_split_noniid(trainset, n_clients=NUM_CLIENTS, alpha=ALPHA)
+ 
+     trainloaders, valloaders = [], []
+     for i, ds in enumerate(datasets):
+@@ -1803,10 +1873,17 @@
+             f"LR={learning_rate:.6f} | FedProx={USE_FEDPROX} | seed={_local_seed}"
+         )
+ 
++        # === GG MODIFICATION (fit) ==========================================
++        _gg_tracker = None
++        _gfile = str(config.get("gg_grad_file", ""))
++        if _loader is not None and _gfile:
++            _gg = torch.load(_gfile, map_location=DEVICE, weights_only=True)
++            _gg_tracker = gg_diag.EpochTracker(self.net, _gg["loo"].get(int(self.cid)), _gg["all"])
+         if _loader is not None:
+-            steps_executed, examples_processed = train_steps(
++            steps_executed, examples_processed = train_steps_gg(
+                 self.net, _loader, num_steps, learning_rate,
+-                use_fedprox=USE_FEDPROX, mu=FEDPROX_MU, global_params=global_params)
++                use_fedprox=USE_FEDPROX, mu=FEDPROX_MU, global_params=global_params,
++                epoch_len=int(_pol["n_batches"]), on_epoch=_gg_tracker)
+         else:
+             steps_executed, examples_processed = 0, 0
+ 
+@@ -1841,6 +1918,8 @@
+             "donor": int(_pol["donor"]),
+             "perm_id": str(_pol["perm_id"]),
+             "local_seed": _local_seed,
++            "E_arm": int(_pol["E_arm"]),
++            **(_gg_tracker.as_metrics() if _gg_tracker is not None else {}),
+         }
+ 
+     def evaluate(self, parameters, config):
+@@ -1861,12 +1940,21 @@
+ # 7. ESTRATÉGIA DO SERVIDOR E AGREGAÇÃO
+ # ==============================================================================
+ 
++GG_CLASS_ROWS, GG_CONFUSION = [], {}   # GG MODIFICATION: filled by the centralized evaluation
++
++
+ def get_evaluate_fn(test_loader):
+     """Retorna uma função para avaliação centralizada no servidor."""
+     def evaluate(server_round: int, parameters: fl.common.NDArrays, config: Dict[str, fl.common.Scalar]):
+         net = get_net().to(DEVICE)
+         net.load_state_dict(OrderedDict({k: torch.tensor(v) for k, v in zip(net.state_dict().keys(), parameters)}))
+         loss, accuracy = test(net, test_loader)
++        # === GG MODIFICATION (class-sensitive evaluation) =====================
++        _cm = gg_diag.confusion(net, test_loader, NUM_CLASSES, DEVICE)
++        GG_CLASS_ROWS.append({"round": int(server_round), **{
++            k: v for k, v in gg_diag.class_metrics(_cm).items() if k != "per_class_recall"},
++            **{f"recall_c{c}": r for c, r in enumerate(gg_diag.class_metrics(_cm)["per_class_recall"])}})
++        GG_CONFUSION[int(server_round)] = _cm.tolist()
+         r2_policy.mark_round()  # R2: wall-clock stamp, one per round
+         print(f"\n--- Rodada {server_round} - Avaliação Centralizada (Servidor) ---")
+         print(f"Loss (Servidor): {loss:.4f} | Acurácia (Servidor): {accuracy:.4f}")
+@@ -1932,14 +2020,37 @@
+         calcular_heterogeneidade(str(_c), _dl, NUM_CLASSES), NUM_CLASSES)
+     for _c, _dl in enumerate(trainloaders)
+ ]
+-R2_POLICY_TABLE = r2_policy.build_plan(
++# === GG MODIFICATION (plan) ===============================================
++GG_PARTITION = gg_policy.active_partition()
++if _os.environ.get("FL_GG_PLAN_ONLY", "").strip():
++    _gg_plans = {}
++    for _arm in gg_policy.ARMS:
++        if _arm == "fedprox_tuned" and GG_PARTITION != "dirichlet":
++            continue
++        _t = gg_policy.build_plan(
++            arm=_arm, partition=GG_PARTITION, trainloaders=trainloaders, h_values=_R2_H, seed=SEED,
++            dataset=DATASET, alpha=ALPHA, epochs_fn=define_epochs_dinamicas, lr_fn=define_lr_dinamico,
++            base_epochs=BASE_EPOCHS, min_epochs=MIN_EPOCHS, base_lr=BASE_LR, min_lr=MIN_LR,
++            flops_per_sample_full=FLOPS_PER_SAMPLE_FULL)
++        _st = dict(r2_policy._STATE)
++        _gg_plans[_arm] = {k: _st[k] for k in ("E_arm", "LR_arm", "tau_received",
++                                               "weighted_steps_arm", "weighted_steps_full")}
++    _st = dict(r2_policy._STATE)
++    _Path(_os.environ["FL_GG_PLAN_ONLY"]).write_text(json.dumps({
++        "seed": SEED, "alpha": ALPHA, "partition": GG_PARTITION, "n_samples": _st["n_samples"],
++        "n_batches": _st["n_batches"], "H": _st["H"], "E_full": _st["E_full"], "LR_full": _st["LR_full"],
++        "arms": _gg_plans}, indent=1), encoding="utf-8")
++    print(f"[gg] plan-only: written {_os.environ['FL_GG_PLAN_ONLY']}")
++    raise SystemExit(0)
++R2_ARM_NAME = gg_policy.active_arm()
++R2_POLICY_TABLE = gg_policy.build_plan(
++    arm=R2_ARM_NAME, partition=GG_PARTITION,
+     trainloaders=trainloaders, h_values=_R2_H, seed=SEED, dataset=DATASET, alpha=ALPHA,
+     epochs_fn=define_epochs_dinamicas, lr_fn=define_lr_dinamico,
+     base_epochs=BASE_EPOCHS, min_epochs=MIN_EPOCHS, base_lr=BASE_LR, min_lr=MIN_LR,
+     flops_per_sample_full=FLOPS_PER_SAMPLE_FULL,
+ )
+-R2_ARM_NAME = r2_policy.active_arm()
+-print(f"[r2] arm={R2_ARM_NAME} | per-client plan={R2_POLICY_TABLE}")
++print(f"[gg] partition={GG_PARTITION} | arm={R2_ARM_NAME} | per-client plan={R2_POLICY_TABLE}")
+ 
+ # Estratégia instrumentada: hereda de FedAvg normalmente, mas grava a telemetria de
+ # diagnóstico de drift (ver drift_telemetry.py) ao agregar cada rodada, sem alterar
+@@ -1956,6 +2067,79 @@
+         return super().aggregate_fit(server_round, results, failures)
+ 
+ 
++# === GG MODIFICATION (server diagnostics) ===================================
++GG_RUN_DIR = _Path(_os.environ.get("FL_R2_RUN_DIR", "").strip() or ".")
++GG_SERVER_ROWS = []
++_GG_N = [len(dl.dataset) for dl in trainloaders]
++_GG_EVAL_LOADERS = [DataLoader(dl.dataset, batch_size=256, shuffle=False) if len(dl.dataset) else None
++                    for dl in trainloaders]
++
++
++def _gg_grad_file(rnd):
++    return str(GG_RUN_DIR / f"gg_grads_round_{int(rnd)}.pt")
++
++
++class FedAvgGG(FedAvgDrift):
++    """Reads w^t before a round and the returned updates after it; aggregation is FedAvg's."""
++
++    def configure_fit(self, server_round, parameters, client_manager):
++        net = get_net().to(DEVICE)
++        nd = fl.common.parameters_to_ndarrays(parameters)
++        net.load_state_dict(OrderedDict({k: torch.tensor(v) for k, v in zip(net.state_dict().keys(), nd)}))
++        local = []
++        for k, ld in enumerate(_GG_EVAL_LOADERS):
++            local.append(None if ld is None else gg_diag.full_gradient(net, ld, DEVICE)[0])
++        g, loo = gg_diag.loo_gradients(local, _GG_N)
++        self._gg = {"w": gg_diag.flat_params(net).clone(), "g": g, "loo": loo, "local": local,
++                    "round": int(server_round)}
++        GG_RUN_DIR.mkdir(parents=True, exist_ok=True)
++        torch.save({"all": g.detach().cpu(),
++                    "loo": {k: v.detach().cpu() for k, v in enumerate(loo) if v is not None}},
++                   _gg_grad_file(server_round))
++        return super().configure_fit(server_round, parameters, client_manager)
++
++    def aggregate_fit(self, server_round, results, failures):
++        out = super().aggregate_fit(server_round, results, failures)
++        st = getattr(self, "_gg", None)
++        if st is not None and st["round"] == int(server_round):
++            net = get_net()
++            keys = list(net.state_dict().keys())
++            order = [n for n, _ in net.named_parameters()]
++            N = float(sum(_GG_N))
++            agg = None
++            per = {}
++            for _proxy, fit_res in results:
++                cid = int(fit_res.metrics.get("cid"))
++                nd = dict(zip(keys, fl.common.parameters_to_ndarrays(fit_res.parameters)))
++                wk = torch.cat([torch.as_tensor(nd[n]).reshape(-1) for n in order]).to(st["w"].device)
++                u = wk - st["w"]
++                per[cid] = u
++                agg = (_GG_N[cid] / N) * u if agg is None else agg + (_GG_N[cid] / N) * u
++            for cid, u in sorted(per.items()):
++                gk, gl = st["local"][cid], st["loo"][cid]
++                GG_SERVER_ROWS.append({
++                    "round": int(server_round), "client_id": cid, "n_k": _GG_N[cid],
++                    "H_k": float(_R2_H[cid]), "E_arm": int(R2_POLICY_TABLE[cid]["E_arm"]),
++                    "lr": float(R2_POLICY_TABLE[cid]["lr"]), "tau": int(R2_POLICY_TABLE[cid]["tau"]),
++                    "grad_cos_loo": gg_diag.cosine(gk, gl) if gk is not None and gl is not None else "",
++                    "grad_cos_all": gg_diag.cosine(gk, st["g"]) if gk is not None else "",
++                    "grad_dissim": float((gk - st["g"]).norm()) if gk is not None else "",
++                    "grad_norm": float(gk.norm()) if gk is not None else "",
++                    "upd_cos_loo": gg_diag.cosine(u, -gl) if gl is not None else "",
++                    "upd_cos_all": gg_diag.cosine(u, -st["g"]),
++                    "upd_cos_agg": gg_diag.cosine(u, agg),
++                    "upd_lin_loo": float(torch.dot(u, gl)) if gl is not None else "",
++                    "upd_norm": float(u.norm()),
++                    "agg_cos_all": gg_diag.cosine(agg, -st["g"]),
++                    "global_grad_norm": float(st["g"].norm()),
++                })
++        try:
++            _Path(_gg_grad_file(server_round)).unlink()
++        except OSError:
++            pass
++        return out
++
++
+ _ref_net_drift = get_net()
+ _DRIFT_TRAINABLE_KEYS = drift_telemetry.get_trainable_keys(_ref_net_drift)
+ _DRIFT_STATE_DICT_KEYS = list(_ref_net_drift.state_dict().keys())
+@@ -1978,7 +2162,7 @@
+ )
+ 
+ # Define a estratégia de agregação do servidor (FedAvg)
+-strategy = FedAvgDrift(
++strategy = FedAvgGG(  # GG MODIFICATION (server diagnostics)
+     initial_parameters=initial_parameters,
+     fraction_fit=1.0,           # Usa 100% dos clientes para treinamento em cada rodada
+     fraction_evaluate=1.0,      # Usa 100% dos clientes para avaliação
+@@ -1988,7 +2172,7 @@
+     evaluate_fn=get_evaluate_fn(testloader),  # Avaliação centralizada no servidor
+     evaluate_metrics_aggregation_fn=weighted_average, # Agregação de métricas dos clientes
+     fit_metrics_aggregation_fn=fit_metrics_aggregation_fn, # Telemetria das heurísticas dinâmicas
+-    on_fit_config_fn=lambda rnd: {"server_round": int(rnd)},  # R2: round id for worker seeding
++    on_fit_config_fn=lambda rnd: {"server_round": int(rnd), "gg_grad_file": _gg_grad_file(rnd)},  # GG
+     drift_trainable_keys=_DRIFT_TRAINABLE_KEYS,
+     drift_state_dict_keys=_DRIFT_STATE_DICT_KEYS,
+     drift_method="FedHAD",
+@@ -2095,6 +2279,24 @@
+             history=history, fit_metrics_history=fit_metrics_history, elapsed=elapsed,
+             hardware=_hw)
+         print(f"[r2] artifacts written to {_r2_dir}")
++        # === GG MODIFICATION (artifacts) ==================================
++        gg_diag.write_rows(_Path(_r2_dir) / "gg_server.csv", GG_SERVER_ROWS)
++        _ep_rows = []
++        for _rnd, _rm in enumerate(fit_metrics_history, start=1):
++            for _n, _m in _rm:
++                for _e in range(1, 6):
++                    if f"gg_step_norm_e{_e}" not in _m:
++                        continue
++                    _ep_rows.append({"round": _rnd, "client_id": int(_m.get("cid")), "n_k": int(_n),
++                                     "H_k": _m.get("H_k"), "E_arm": _m.get("E_arm"),
++                                     "E_full": _m.get("E_full"), "lr": _m.get("learning_rate"),
++                                     "epoch": _e, **{q: _m.get(f"gg_{q}_e{_e}", "") for q in (
++                                         "step_norm", "marg_cos_loo", "cum_cos_loo", "marg_lin_loo",
++                                         "marg_cos_all", "marg_lin_all")}})
++        gg_diag.write_rows(_Path(_r2_dir) / "gg_epochs.csv", _ep_rows)
++        gg_diag.write_rows(_Path(_r2_dir) / "gg_class.csv", GG_CLASS_ROWS)
++        (_Path(_r2_dir) / "gg_confusion.json").write_text(json.dumps(GG_CONFUSION), encoding="utf-8")
++        print(f"[gg] diagnostics written: {len(GG_SERVER_ROWS)} server rows, {len(_ep_rows)} epoch rows")
+ 
+     saved_path = save_simulation_results(history, elapsed, energy_info=energy_info)
+     print(f"\nResultados salvos em: {saved_path}")
+\ No newline at end of file

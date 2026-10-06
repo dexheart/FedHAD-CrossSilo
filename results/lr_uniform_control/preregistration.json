@@ -1,0 +1,130 @@
+{
+  "arms": {
+    "full_fedhad": "E_full(H_k), eta_k = max(eta_min, eta_base / (1 + lambda_eta H_k))",
+    "inv": "E_full(H_k), FedHAD multiset of eta_k re-assigned in inverse order of H_k among clients with data (largest H_k -> largest eta); ties by client index; clients without data keep their own rate",
+    "lr_only_matched": "E_fixed of Section 6.10 (ablation_policy.build_allocation), eta_k of FedHAD",
+    "u1": "E_fixed, uniform eta_bar computed with tau_k from E_fixed",
+    "u2": "E_full(H_k), uniform eta_bar computed with tau_k from E_full",
+    "u2_arith": "E_full(H_k), uniform eta = arithmetic mean of eta_k over clients with data"
+  },
+  "bootstrap": {
+    "levels": [
+      0.95,
+      0.9
+    ],
+    "resamples": 10000,
+    "seed": 20260930,
+    "type": "percentile over seeds"
+  },
+  "classification_rule": {
+    "1": "Holm p < 0.05 and the whole 95% bootstrap CI above 0",
+    "2": "neither 1 nor 3, and the whole 90% bootstrap CI inside (-delta, +delta) (TOST at 5%); the two one-sided Wilcoxon p-values against -delta and +delta are reported",
+    "3": "Holm p < 0.05 and the whole 95% bootstrap CI below 0",
+    "4": "any other case: inconclusive; report the 90% CI half-width and the number of seeds that would fit it in the margin by simple extrapolation from the SD of the paired differences",
+    "alphas_not_combined": true,
+    "applies_to": "each contrast, separately at each alpha, mechanically",
+    "categories": {
+      "1": "1: heterogeneity-based LR assignment superior",
+      "2": "2: practically equivalent (within +/- delta)",
+      "3": "3: uniform LR superior",
+      "4": "4: inconclusive"
+    },
+    "secondary_role": "supporting evidence only, never a substitute for the primary"
+  },
+  "code_fingerprint": "cddbe54c48c3da540a6d09a109b4fa35c25fa03b2db36cf76bd9cdacc7f00eab",
+  "contrasts": {
+    "primary": "Full FedHAD - U2",
+    "secondary": [
+      "LR-only matched - U1",
+      "Full FedHAD - U2-arith",
+      "Full FedHAD - INV"
+    ]
+  },
+  "empty_clients": "clients without samples do not enter eta_bar and do not train, as in Section 6.10; primary analysis includes all 30 seeds; sensitivity analysis excludes seeds with an empty client",
+  "equivalence_margins_pp": {
+    "0.01": 1.0,
+    "0.1": 0.75
+  },
+  "eta_bar_definitions": {
+    "arithmetic": "mean_k eta_k over clients with data (arm u2_arith)",
+    "eta_k_source": "the rates FedHAD produces on that partition",
+    "primary": "sum_k p_k eta_k tau_k / sum_k p_k tau_k (clients with data)",
+    "tau_weighted": "sum_k eta_k tau_k / sum_k tau_k (recorded, sensitivity)"
+  },
+  "holm_families": {
+    "primary": "Full - U2 alone, separately at each alpha (Holm-adjusted p equals raw p)",
+    "secondary": "the three secondary contrasts, one family at each alpha"
+  },
+  "hypotheses": {
+    "outcome_1": "heterogeneity-based assignment superior (Full FedHAD > U2)",
+    "outcome_2": "practically equivalent (|Full - U2| within +/- delta)",
+    "outcome_3": "uniform learning rate superior (U2 > Full FedHAD)",
+    "outcome_4": "inconclusive (none of the above by the rule below)"
+  },
+  "notation": {
+    "p_k": "n_k_train / N, aggregation weight",
+    "tau_k": "E_k * floor(n_k_train / 32), optimizer steps per round"
+  },
+  "outcome": "final centralized test accuracy after the last round, in percentage points",
+  "question": "Does assigning the local learning rate according to the heterogeneity score H_k produce a different final accuracy from giving every client one uniform learning rate with the same aggregate first-order aggressiveness?",
+  "reference_source": "re-executed_in_this_battery",
+  "substrate": {
+    "alphas": [
+      0.1,
+      0.01
+    ],
+    "batch_size": 32,
+    "clients": 5,
+    "comm_delay_s": 0.05,
+    "dataset": "CIFAR10",
+    "epoch_ceiling": 5,
+    "fedhad": {
+      "base_epochs": 5,
+      "base_lr": 0.01,
+      "epochs_decay": 3.0,
+      "lr_decay": 1.5,
+      "min_epochs": 2,
+      "min_lr": 0.001
+    },
+    "initialization": "common checkpoint per seed, SHA-256 verified (results_reviewer_r2_checkpoints)",
+    "optimizer": "SGD, momentum 0.9",
+    "participation": "full",
+    "proximal_mu": 0.01,
+    "rounds": 10,
+    "seeds": [
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70,
+      71
+    ],
+    "stochastic_trajectory": "worker seeding per (seed, client, round), identical across arms"
+  },
+  "test": "paired two-sided Wilcoxon signed-rank over seeds",
+  "title": "LR-uniform control battery for FedHAD (Section 6.10 substrate)"
+}

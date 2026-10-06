@@ -1,0 +1,148 @@
+--- ../FedHAD_Final_2.0.py	2026-09-04 11:08:18.430800823 -0300
++++ code/fedhad_ablation.py	2026-09-06 19:20:09.647319026 -0300
+@@ -303,6 +303,11 @@
+ # === Overrides via variáveis de ambiente (usados pelo coordenador run_experiments.py) ===
+ # Se a env não estiver definida, mantém-se o valor padrão acima — rodar o script
+ # isoladamente continua funcionando exatamente como antes.
++# === ABLATION MODIFICATION (1 of 4) ==========================================
++# New module holding every change the ablation needs, so that the diff applied to
++# this copied FedHAD source stays small and auditable. See ablation_policy.py.
++import ablation_policy
++
+ import os as _os
+ 
+ def _env_int(name, default):
+@@ -1699,24 +1704,24 @@
+         heterogeneidade_raw = calcular_heterogeneidade(self.cid, self.trainloader, NUM_CLASSES)
+         heterogeneidade = normalizar_heterogeneidade(heterogeneidade_raw, NUM_CLASSES)
+ 
+-        # 2. Define o número de épocas com base na heterogeneidade
+-        if USE_DYNAMIC_EPOCHS:
+-            num_epochs = define_epochs_dinamicas(heterogeneidade, BASE_EPOCHS, MIN_EPOCHS)
+-        else:
+-            num_epochs = 1
+-
+-        # 3. Define a taxa de aprendizagem com base na heterogeneidade
+-        if USE_DYNAMIC_LR:
+-            # Cenário da Tese: LR se adapta à dificuldade do cliente
+-            learning_rate = define_lr_dinamico(heterogeneidade, BASE_LR, MIN_LR)
+-        else:
+-            # Cenário Baseline: LR é fixo e igual para todos
+-            learning_rate = BASE_LR
++        # === ABLATION MODIFICATION (2 of 4) ==================================
++        # Original: E_k and LR_k were derived here from H_k, gated by
++        # USE_DYNAMIC_EPOCHS / USE_DYNAMIC_LR. The ablation needs five different
++        # (E_k, LR_k) policies over an IDENTICAL federation, so the allocation is
++        # precomputed once per run by ablation_policy.build_allocation() and only
++        # looked up here. For FL_ABLATION_VARIANT=full_fedhad the values returned
++        # are exactly define_epochs_dinamicas(H_k) / define_lr_dinamico(H_k),
++        # i.e. the original behaviour.
++        # Read from a plain module-level list rather than calling into
++        # ablation_policy here: Ray does NOT re-execute this module's top level in
++        # the worker, so an imported module arrives with empty state, whereas a
++        # plain list of tuples is serialised by value along with client_fn.
++        num_epochs, learning_rate = ABLATION_POLICY_TABLE[int(self.cid)]
+ 
+         print(
+             f"Cliente {self.cid}: HetRaw={heterogeneidade_raw:.4f} | HetNorm={heterogeneidade:.4f} | "
+-            f"Epochs={num_epochs} (dyn={USE_DYNAMIC_EPOCHS}) | "
+-            f"LR={learning_rate:.6f} (dyn={USE_DYNAMIC_LR}) | "
++            f"Epochs={num_epochs} | LR={learning_rate:.6f} | "
++            f"variant={ABLATION_VARIANT_NAME} | "
+             f"FedProx={USE_FEDPROX} (mu={FEDPROX_MU if USE_FEDPROX else 'N/A'})"
+         )
+ 
+@@ -1779,6 +1784,7 @@
+         net = get_net().to(DEVICE)
+         net.load_state_dict(OrderedDict({k: torch.tensor(v) for k, v in zip(net.state_dict().keys(), parameters)}))
+         loss, accuracy = test(net, test_loader)
++        ablation_policy.mark_round()  # ABLATION: wall-clock stamp, one per round
+         print(f"\n--- Rodada {server_round} - Avaliação Centralizada (Servidor) ---")
+         print(f"Loss (Servidor): {loss:.4f} | Acurácia (Servidor): {accuracy:.4f}")
+         return loss, {"accuracy": accuracy, "loss": loss}
+@@ -1834,6 +1840,29 @@
+ # Carrega os dados antes de definir a estratégia
+ trainloaders, valloaders, testloader = load_data()
+ 
++# === ABLATION MODIFICATION (3 of 4) ==========================================
++# Precompute every variant's per-client (E_k, LR_k) allocation once, from the
++# same H_k the original computes inside fit(), and assert the fairness invariants
++# (identical total epochs across arms; permuted arm reuses the exact multiset).
++# H_k is a pure function of the client's partition, which does not change during
++# training, so evaluating it once here is equivalent to evaluating it per round.
++_ABLATION_H = [
++    normalizar_heterogeneidade(
++        calcular_heterogeneidade(str(_c), _dl, NUM_CLASSES), NUM_CLASSES)
++    for _c, _dl in enumerate(trainloaders)
++]
++ablation_policy.build_allocation(
++    trainloaders=trainloaders, h_values=_ABLATION_H, seed=SEED,
++    base_epochs=BASE_EPOCHS, min_epochs=MIN_EPOCHS, base_lr=BASE_LR, min_lr=MIN_LR,
++    epochs_fn=define_epochs_dinamicas, lr_fn=define_lr_dinamico,
++    flops_per_sample_full=FLOPS_PER_SAMPLE_FULL,
++)
++# Plain, picklable-by-value structures for the Ray workers (see the note in fit()).
++ABLATION_POLICY_TABLE = [tuple(x) for x in ablation_policy.variant_epochs_and_lr()]
++ABLATION_VARIANT_NAME = ablation_policy.active_variant()
++print(f"[ablation] variant={ABLATION_VARIANT_NAME} | "
++      f"per-client (epochs, lr)={ABLATION_POLICY_TABLE}")
++
+ # Estratégia instrumentada: hereda de FedAvg normalmente, mas grava a telemetria de
+ # diagnóstico de drift (ver drift_telemetry.py) ao agregar cada rodada, sem alterar
+ # em nada o resultado da agregação (no-op quando FL_DRIFT_CSV não está definida).
+@@ -1845,8 +1874,31 @@
+ _DRIFT_TRAINABLE_KEYS = drift_telemetry.get_trainable_keys(_ref_net_drift)
+ _DRIFT_STATE_DICT_KEYS = list(_ref_net_drift.state_dict().keys())
+ 
++# === ABLATION MODIFICATION (4 of 4) ==========================================
++# The original passes no `initial_parameters`, so Flower requests the initial
++# global model from ONE RANDOM CLIENT, i.e. from a get_net() executed inside a
++# Ray worker whose torch RNG is not seeded by the driver's set_global_seed(SEED).
++# Measured consequence: three runs of the unmodified script with seed 42 produced
++# three different initial models (round-0 centralised accuracy 0.1000 / 0.1001 /
++# 0.0983) and round-1 accuracies 3.2 percentage points apart.
++#
++# An ablation whose arms start from different random initialisations cannot
++# attribute a difference to the variant, so the initial model is fixed here,
++# deterministically, in the driver - exactly as FedAvgM_Final.py and
++# FedNova_Final.py already do. This is the ONLY behavioural difference between
++# this copy and the historical implementation, it applies identically to all five
++# arms including full_fedhad, and it is why the ablation is re-run in full rather
++# than compared against the historical campaign.
++set_global_seed(SEED)
++_ABLATION_INITIAL_NET = get_net()
++_ABLATION_INITIAL_STATE = _ABLATION_INITIAL_NET.state_dict()
++initial_parameters = fl.common.ndarrays_to_parameters(
++    [val.cpu().numpy() for _, val in _ABLATION_INITIAL_STATE.items()]
++)
++
+ # Define a estratégia de agregação do servidor (FedAvg)
+ strategy = FedAvgDrift(
++    initial_parameters=initial_parameters,
+     fraction_fit=1.0,           # Usa 100% dos clientes para treinamento em cada rodada
+     fraction_evaluate=1.0,      # Usa 100% dos clientes para avaliação
+     min_fit_clients=NUM_CLIENTS,
+@@ -1940,5 +1992,22 @@
+         if gpu_estimator.util_samples:
+             energy_info["gpu_util_media"] = sum(gpu_estimator.util_samples) / len(gpu_estimator.util_samples)
+ 
++    # ABLATION: raw per-run artifacts (fingerprint proving the arms are paired,
++    # plus per-round per-client telemetry). Written only when the runner asks.
++    _abl_dir = _os.environ.get("FL_ABLATION_RAW_DIR", "").strip()
++    if _abl_dir:
++        _abl_fp = ablation_policy.fingerprint(
++            initial_state_dict=_ABLATION_INITIAL_STATE, dataset=DATASET, alpha=ALPHA,
++            num_rounds=NUM_ROUNDS, batch_size=BATCH_SIZE,
++            extra={"fedprox_mu": FEDPROX_MU, "use_fedprox": USE_FEDPROX,
++                   "base_epochs": BASE_EPOCHS, "min_epochs": MIN_EPOCHS,
++                   "epochs_decay": EPOCHS_DECAY_FACTOR, "lr_decay": LR_DECAY_FACTOR,
++                   "base_lr": BASE_LR, "min_lr": MIN_LR,
++                   "client_setup": CLIENT_SETUP, "device": str(DEVICE)},
++        )
++        _abl_tag = ablation_policy.write_run_artifacts(
++            _abl_dir, _abl_fp, history, fit_metrics_history, elapsed)
++        print(f"[ablation] raw artifacts written for {_abl_tag}")
++
+     saved_path = save_simulation_results(history, elapsed, energy_info=energy_info)
+     print(f"\nResultados salvos em: {saved_path}")
+\ No newline at end of file

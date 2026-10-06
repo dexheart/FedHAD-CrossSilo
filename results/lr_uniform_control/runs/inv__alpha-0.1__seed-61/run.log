@@ -1,0 +1,526 @@
+
+===== 2026-10-01T14:56:33 =====
+Treinando no dispositivo: cuda:0 com o dataset: CIFAR10 | Setup clientes: 5 (num_gpus por cliente=0.2) | SEED=61
+FLOPS por amostra (forward): 6.030e+07 | (forward+backward, 3x): 1.809e+08
+Files already downloaded and verified
+Files already downloaded and verified
+Dividindo o dataset usando a distribuição de Dirichlet com alpha=0.1.
+[lru] arm=inv | per-client plan=[{'tau': 1376, 'lr': 0.006236510703617074, 'n_batches': 344, 'E_full': 4, 'tau_original': 1376, 'donor': 0, 'perm_id': ''}, {'tau': 1632, 'lr': 0.005822340425088887, 'n_batches': 408, 'E_full': 4, 'tau_original': 1632, 'donor': 1, 'perm_id': ''}, {'tau': 1428, 'lr': 0.006263814413375216, 'n_batches': 357, 'E_full': 4, 'tau_original': 1428, 'donor': 2, 'perm_id': ''}, {'tau': 604, 'lr': 0.004667561347581087, 'n_batches': 151, 'E_full': 4, 'tau_original': 604, 'donor': 3, 'perm_id': ''}, {'tau': 429, 'lr': 0.006311326659747131, 'n_batches': 143, 'E_full': 3, 'tau_original': 429, 'donor': 4, 'perm_id': ''}]
+Iniciando a simulação de Aprendizado Federado...
+=== Diagnóstico de Medição de GPU ===
+  pynvml_disponivel: True
+  pynvml_versao: 580.178.04
+  gpus_detectadas: 1
+  leitura_potencia_ok: True
+  potencia_atual_W: 63.29
+[93mWARNING [0m:   DEPRECATED FEATURE: flwr.simulation.start_simulation() is deprecated.
+	Instead, use the `flwr run` CLI command to start a local simulation in your Flower app, as shown for example below:
+
+		$ flwr new  # Create a new Flower app from a template
+
+		$ flwr run  # Run the Flower app in Simulation Mode
+
+	Using `start_simulation()` is deprecated.
+
+            This is a deprecated feature. It will be removed
+            entirely in future versions of Flower.
+        
+[92mINFO [0m:      Starting Flower simulation, config: num_rounds=10, no round_timeout
+2026-10-01 14:56:41,553	INFO worker.py:2012 -- Started a local Ray instance.
+/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py:2051: FutureWarning: Tip: In future versions of Ray, Ray will no longer override accelerator visible devices env var if num_gpus=0 or num_gpus=None (default). To enable this behavior and turn off this error message, set RAY_ACCEL_ENV_VAR_OVERRIDE_ON_ZERO=0
+  warnings.warn(
+[92mINFO [0m:      Flower VCE: Ray initialized with resources: {'memory': 181347429581.0, 'node:10.129.64.100': 1.0, 'object_store_memory': 77720326963.0, 'accelerator_type:A40': 1.0, 'GPU': 1.0, 'CPU': 64.0, 'node:__internal_head__': 1.0}
+[92mINFO [0m:      Optimize your simulation with Flower VCE: https://flower.ai/docs/framework/how-to-run-simulations.html
+/home/tiago/GitHubProjects/fedhad-thesis-2/lr_uniform_control/code/fedhad_lru.py:2080: UserWarning: No `num_cpus` specified in `client_resources`. Using `num_cpus=1` for each client.
+  history = fl.simulation.start_simulation(
+[92mINFO [0m:      Flower VCE: Resources for each Virtual Client: {'num_gpus': 0.2, 'num_cpus': 1}
+[92mINFO [0m:      Flower VCE: Creating VirtualClientEngineActorPool with 5 actors
+[92mINFO [0m:      [INIT]
+[92mINFO [0m:      Using initial global parameters provided by strategy
+[92mINFO [0m:      Starting evaluation of initial global parameters
+
+--- Rodada 0 - Avaliação Centralizada (Servidor) ---
+Loss (Servidor): 2.3033 | Acurácia (Servidor): 0.1000
+[92mINFO [0m:      initial parameters (loss, other metrics): 2.303336143112183, {'accuracy': 0.1, 'loss': 2.303336143112183}
+[92mINFO [0m:      
+[92mINFO [0m:      [ROUND 1]
+[92mINFO [0m:      configure_fit: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=809579)[0m [93mWARNING [0m:   DEPRECATED FEATURE: `client_fn` now expects a signature `def client_fn(context: Context)`.The provided `client_fn` has signature: {'cid': <Parameter "cid: str">}. You can import the `Context` like this: `from flwr.app import Context`
+[36m(ClientAppActor pid=809579)[0m 
+[36m(ClientAppActor pid=809579)[0m             This is a deprecated feature. It will be removed
+[36m(ClientAppActor pid=809579)[0m             entirely in future versions of Flower.
+[36m(ClientAppActor pid=809579)[0m         
+[36m(ClientAppActor pid=809578)[0m 
+[36m(ClientAppActor pid=809578)[0m         
+[36m(ClientAppActor pid=809579)[0m Cliente 4: HetNorm=0.7616 | arm=inv | steps=429 (orig=429, donor=4) | LR=0.006311 | FedProx=True | seed=1489675554
+[36m(ClientAppActor pid=809577)[0m 
+[36m(ClientAppActor pid=809577)[0m         
+[36m(ClientAppActor pid=809576)[0m 
+[36m(ClientAppActor pid=809576)[0m         
+[36m(ClientAppActor pid=809575)[0m 
+[36m(ClientAppActor pid=809575)[0m         
+[92mINFO [0m:      aggregate_fit: received 5 results and 0 failures
+
+--- Rodada 1 - Avaliação Centralizada (Servidor) ---
+Loss (Servidor): 2.2330 | Acurácia (Servidor): 0.1577
+[92mINFO [0m:      fit progress: (1, 2.2329741802215577, {'accuracy': 0.1577, 'loss': 2.2329741802215577}, 18.22467514500022)
+[92mINFO [0m:      configure_evaluate: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=809577)[0m 
+[36m(ClientAppActor pid=809577)[0m         
+[36m(ClientAppActor pid=809577)[0m [93mWARNING [0m:   DEPRECATED FEATURE: `client_fn` now expects a signature `def client_fn(context: Context)`.The provided `client_fn` has signature: {'cid': <Parameter "cid: str">}. You can import the `Context` like this: `from flwr.app import Context`[32m [repeated 5x across cluster] (Ray deduplicates logs by default. Set RAY_DEDUP_LOGS=0 to disable log deduplication, or see https://docs.ray.io/en/master/ray-observability/user-guides/configure-logging.html#log-deduplication for more options.)[0m
+[36m(ClientAppActor pid=809577)[0m             This is a deprecated feature. It will be removed[32m [repeated 5x across cluster][0m
+[36m(ClientAppActor pid=809577)[0m             entirely in future versions of Flower.[32m [repeated 5x across cluster][0m
+[36m(ClientAppActor pid=809575)[0m 
+[36m(ClientAppActor pid=809575)[0m         
+[36m(ClientAppActor pid=809578)[0m 
+[36m(ClientAppActor pid=809578)[0m         
+[36m(ClientAppActor pid=809576)[0m 
+[36m(ClientAppActor pid=809576)[0m         
+[36m(ClientAppActor pid=809579)[0m 
+[36m(ClientAppActor pid=809579)[0m         
+[92mINFO [0m:      aggregate_evaluate: received 5 results and 0 failures
+--- Avaliação Agregada (Clientes) ---
+Loss Média (Clientes): 2.2282 | Acurácia Média (Clientes): 0.1547
+[92mINFO [0m:      
+[92mINFO [0m:      [ROUND 2]
+[92mINFO [0m:      configure_fit: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=809579)[0m 
+[36m(ClientAppActor pid=809579)[0m         
+[36m(ClientAppActor pid=809579)[0m Cliente 0: HetNorm=0.4023 | arm=inv | steps=1376 (orig=1376, donor=0) | LR=0.006237 | FedProx=True | seed=827043475[32m [repeated 5x across cluster][0m
+[36m(ClientAppActor pid=809576)[0m 
+[36m(ClientAppActor pid=809576)[0m         
+[36m(ClientAppActor pid=809575)[0m 
+[36m(ClientAppActor pid=809575)[0m         
+[36m(ClientAppActor pid=809578)[0m 
+[36m(ClientAppActor pid=809578)[0m         
+[36m(ClientAppActor pid=809577)[0m 
+[36m(ClientAppActor pid=809577)[0m         
+[92mINFO [0m:      aggregate_fit: received 5 results and 0 failures
+
+--- Rodada 2 - Avaliação Centralizada (Servidor) ---
+Loss (Servidor): 1.7230 | Acurácia (Servidor): 0.3539
+[92mINFO [0m:      fit progress: (2, 1.7230029022216797, {'accuracy': 0.3539, 'loss': 1.7230029022216797}, 35.037158245017054)
+[92mINFO [0m:      configure_evaluate: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=809578)[0m 
+[36m(ClientAppActor pid=809578)[0m         
+[36m(ClientAppActor pid=809578)[0m [93mWARNING [0m:   DEPRECATED FEATURE: `client_fn` now expects a signature `def client_fn(context: Context)`.The provided `client_fn` has signature: {'cid': <Parameter "cid: str">}. You can import the `Context` like this: `from flwr.app import Context`[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=809578)[0m             This is a deprecated feature. It will be removed[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=809578)[0m             entirely in future versions of Flower.[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=809577)[0m 
+[36m(ClientAppActor pid=809577)[0m         
+[36m(ClientAppActor pid=809579)[0m 
+[36m(ClientAppActor pid=809579)[0m         
+[36m(ClientAppActor pid=809576)[0m 
+[36m(ClientAppActor pid=809576)[0m         
+[36m(ClientAppActor pid=809575)[0m 
+[36m(ClientAppActor pid=809575)[0m         
+[92mINFO [0m:      aggregate_evaluate: received 5 results and 0 failures
+--- Avaliação Agregada (Clientes) ---
+Loss Média (Clientes): 1.7237 | Acurácia Média (Clientes): 0.3505
+[92mINFO [0m:      
+[92mINFO [0m:      [ROUND 3]
+[92mINFO [0m:      configure_fit: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=809575)[0m Cliente 0: HetNorm=0.4023 | arm=inv | steps=1376 (orig=1376, donor=0) | LR=0.006237 | FedProx=True | seed=1737516739[32m [repeated 5x across cluster][0m
+[36m(ClientAppActor pid=809575)[0m 
+[36m(ClientAppActor pid=809575)[0m         
+[36m(ClientAppActor pid=809576)[0m 
+[36m(ClientAppActor pid=809576)[0m         
+[36m(ClientAppActor pid=809579)[0m 
+[36m(ClientAppActor pid=809579)[0m         
+[36m(ClientAppActor pid=809577)[0m 
+[36m(ClientAppActor pid=809577)[0m         
+[36m(ClientAppActor pid=809578)[0m 
+[36m(ClientAppActor pid=809578)[0m         
+[92mINFO [0m:      aggregate_fit: received 5 results and 0 failures
+
+--- Rodada 3 - Avaliação Centralizada (Servidor) ---
+Loss (Servidor): 1.1937 | Acurácia (Servidor): 0.5682
+[92mINFO [0m:      fit progress: (3, 1.1936506484985352, {'accuracy': 0.5682, 'loss': 1.1936506484985352}, 52.11652223800775)
+[92mINFO [0m:      configure_evaluate: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=809578)[0m 
+[36m(ClientAppActor pid=809578)[0m         
+[36m(ClientAppActor pid=809578)[0m [93mWARNING [0m:   DEPRECATED FEATURE: `client_fn` now expects a signature `def client_fn(context: Context)`.The provided `client_fn` has signature: {'cid': <Parameter "cid: str">}. You can import the `Context` like this: `from flwr.app import Context`[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=809578)[0m             This is a deprecated feature. It will be removed[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=809578)[0m             entirely in future versions of Flower.[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=809577)[0m 
+[36m(ClientAppActor pid=809577)[0m         
+[36m(ClientAppActor pid=809575)[0m 
+[36m(ClientAppActor pid=809575)[0m         
+[36m(ClientAppActor pid=809576)[0m 
+[36m(ClientAppActor pid=809576)[0m         
+[36m(ClientAppActor pid=809579)[0m 
+[36m(ClientAppActor pid=809579)[0m         
+[92mINFO [0m:      aggregate_evaluate: received 5 results and 0 failures
+--- Avaliação Agregada (Clientes) ---
+Loss Média (Clientes): 1.1821 | Acurácia Média (Clientes): 0.5682
+[92mINFO [0m:      
+[92mINFO [0m:      [ROUND 4]
+[92mINFO [0m:      configure_fit: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=809579)[0m 
+[36m(ClientAppActor pid=809579)[0m         
+[36m(ClientAppActor pid=809579)[0m Cliente 3: HetNorm=0.3896 | arm=inv | steps=604 (orig=604, donor=3) | LR=0.004668 | FedProx=True | seed=2028472548[32m [repeated 5x across cluster][0m
+[36m(ClientAppActor pid=809576)[0m 
+[36m(ClientAppActor pid=809576)[0m         
+[36m(ClientAppActor pid=809577)[0m 
+[36m(ClientAppActor pid=809577)[0m         
+[36m(ClientAppActor pid=809575)[0m 
+[36m(ClientAppActor pid=809575)[0m         
+[36m(ClientAppActor pid=809578)[0m 
+[36m(ClientAppActor pid=809578)[0m         
+[92mINFO [0m:      aggregate_fit: received 5 results and 0 failures
+
+--- Rodada 4 - Avaliação Centralizada (Servidor) ---
+Loss (Servidor): 0.9834 | Acurácia (Servidor): 0.6396
+[92mINFO [0m:      fit progress: (4, 0.9834054656982422, {'accuracy': 0.6396, 'loss': 0.9834054656982422}, 68.98539484702633)
+[92mINFO [0m:      configure_evaluate: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=809578)[0m 
+[36m(ClientAppActor pid=809578)[0m         
+[36m(ClientAppActor pid=809578)[0m [93mWARNING [0m:   DEPRECATED FEATURE: `client_fn` now expects a signature `def client_fn(context: Context)`.The provided `client_fn` has signature: {'cid': <Parameter "cid: str">}. You can import the `Context` like this: `from flwr.app import Context`[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=809578)[0m             This is a deprecated feature. It will be removed[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=809578)[0m             entirely in future versions of Flower.[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=809575)[0m 
+[36m(ClientAppActor pid=809575)[0m         
+[36m(ClientAppActor pid=809577)[0m 
+[36m(ClientAppActor pid=809577)[0m         
+[36m(ClientAppActor pid=809579)[0m 
+[36m(ClientAppActor pid=809579)[0m         
+[36m(ClientAppActor pid=809576)[0m 
+[36m(ClientAppActor pid=809576)[0m         
+[92mINFO [0m:      aggregate_evaluate: received 5 results and 0 failures
+--- Avaliação Agregada (Clientes) ---
+Loss Média (Clientes): 0.9469 | Acurácia Média (Clientes): 0.6589
+[92mINFO [0m:      
+[92mINFO [0m:      [ROUND 5]
+[92mINFO [0m:      configure_fit: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=809576)[0m Cliente 3: HetNorm=0.3896 | arm=inv | steps=604 (orig=604, donor=3) | LR=0.004668 | FedProx=True | seed=1179857515[32m [repeated 5x across cluster][0m
+[36m(ClientAppActor pid=809576)[0m 
+[36m(ClientAppActor pid=809576)[0m         
+[36m(ClientAppActor pid=809579)[0m 
+[36m(ClientAppActor pid=809579)[0m         
+[36m(ClientAppActor pid=809577)[0m 
+[36m(ClientAppActor pid=809577)[0m         
+[36m(ClientAppActor pid=809575)[0m 
+[36m(ClientAppActor pid=809575)[0m         
+[36m(ClientAppActor pid=809578)[0m 
+[36m(ClientAppActor pid=809578)[0m         
+[92mINFO [0m:      aggregate_fit: received 5 results and 0 failures
+
+--- Rodada 5 - Avaliação Centralizada (Servidor) ---
+Loss (Servidor): 0.8888 | Acurácia (Servidor): 0.6757
+[92mINFO [0m:      fit progress: (5, 0.8887636665344238, {'accuracy': 0.6757, 'loss': 0.8887636665344238}, 85.79040064100991)
+[92mINFO [0m:      configure_evaluate: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=809577)[0m 
+[36m(ClientAppActor pid=809577)[0m         
+[36m(ClientAppActor pid=809577)[0m [93mWARNING [0m:   DEPRECATED FEATURE: `client_fn` now expects a signature `def client_fn(context: Context)`.The provided `client_fn` has signature: {'cid': <Parameter "cid: str">}. You can import the `Context` like this: `from flwr.app import Context`[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=809577)[0m             This is a deprecated feature. It will be removed[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=809577)[0m             entirely in future versions of Flower.[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=809578)[0m 
+[36m(ClientAppActor pid=809578)[0m         
+[36m(ClientAppActor pid=809579)[0m 
+[36m(ClientAppActor pid=809579)[0m         
+[36m(ClientAppActor pid=809576)[0m 
+[36m(ClientAppActor pid=809576)[0m         
+[36m(ClientAppActor pid=809575)[0m 
+[36m(ClientAppActor pid=809575)[0m         
+[92mINFO [0m:      aggregate_evaluate: received 5 results and 0 failures
+--- Avaliação Agregada (Clientes) ---
+Loss Média (Clientes): 0.8618 | Acurácia Média (Clientes): 0.6815
+[92mINFO [0m:      
+[92mINFO [0m:      [ROUND 6]
+[92mINFO [0m:      configure_fit: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=809575)[0m Cliente 1: HetNorm=0.3976 | arm=inv | steps=1632 (orig=1632, donor=1) | LR=0.005822 | FedProx=True | seed=187160532[32m [repeated 5x across cluster][0m
+[36m(ClientAppActor pid=809575)[0m 
+[36m(ClientAppActor pid=809575)[0m         
+[36m(ClientAppActor pid=809576)[0m 
+[36m(ClientAppActor pid=809576)[0m         
+[36m(ClientAppActor pid=809579)[0m 
+[36m(ClientAppActor pid=809579)[0m         
+[36m(ClientAppActor pid=809578)[0m 
+[36m(ClientAppActor pid=809578)[0m         
+[36m(ClientAppActor pid=809577)[0m 
+[36m(ClientAppActor pid=809577)[0m         
+[92mINFO [0m:      aggregate_fit: received 5 results and 0 failures
+
+--- Rodada 6 - Avaliação Centralizada (Servidor) ---
+Loss (Servidor): 0.8215 | Acurácia (Servidor): 0.6995
+[92mINFO [0m:      fit progress: (6, 0.8214920286178589, {'accuracy': 0.6995, 'loss': 0.8214920286178589}, 102.17310813901713)
+[92mINFO [0m:      configure_evaluate: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=809575)[0m 
+[36m(ClientAppActor pid=809575)[0m         
+[36m(ClientAppActor pid=809575)[0m [93mWARNING [0m:   DEPRECATED FEATURE: `client_fn` now expects a signature `def client_fn(context: Context)`.The provided `client_fn` has signature: {'cid': <Parameter "cid: str">}. You can import the `Context` like this: `from flwr.app import Context`[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=809575)[0m             This is a deprecated feature. It will be removed[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=809575)[0m             entirely in future versions of Flower.[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=809578)[0m 
+[36m(ClientAppActor pid=809578)[0m         
+[36m(ClientAppActor pid=809579)[0m 
+[36m(ClientAppActor pid=809579)[0m         
+[36m(ClientAppActor pid=809577)[0m 
+[36m(ClientAppActor pid=809577)[0m         
+[36m(ClientAppActor pid=809576)[0m 
+[36m(ClientAppActor pid=809576)[0m         
+[92mINFO [0m:      aggregate_evaluate: received 5 results and 0 failures
+--- Avaliação Agregada (Clientes) ---
+Loss Média (Clientes): 0.7982 | Acurácia Média (Clientes): 0.7067
+[92mINFO [0m:      
+[92mINFO [0m:      [ROUND 7]
+[92mINFO [0m:      configure_fit: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=809576)[0m Cliente 2: HetNorm=0.4783 | arm=inv | steps=1428 (orig=1428, donor=2) | LR=0.006264 | FedProx=True | seed=237959344[32m [repeated 5x across cluster][0m
+[36m(ClientAppActor pid=809576)[0m 
+[36m(ClientAppActor pid=809576)[0m         
+[36m(ClientAppActor pid=809577)[0m 
+[36m(ClientAppActor pid=809577)[0m         
+[36m(ClientAppActor pid=809578)[0m 
+[36m(ClientAppActor pid=809578)[0m         
+[36m(ClientAppActor pid=809579)[0m 
+[36m(ClientAppActor pid=809579)[0m         
+[36m(ClientAppActor pid=809575)[0m 
+[36m(ClientAppActor pid=809575)[0m         
+[92mINFO [0m:      aggregate_fit: received 5 results and 0 failures
+
+--- Rodada 7 - Avaliação Centralizada (Servidor) ---
+Loss (Servidor): 0.8228 | Acurácia (Servidor): 0.7047
+[92mINFO [0m:      fit progress: (7, 0.8227941699028015, {'accuracy': 0.7047, 'loss': 0.8227941699028015}, 119.05561099899933)
+[92mINFO [0m:      configure_evaluate: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=809579)[0m 
+[36m(ClientAppActor pid=809579)[0m         
+[36m(ClientAppActor pid=809579)[0m [93mWARNING [0m:   DEPRECATED FEATURE: `client_fn` now expects a signature `def client_fn(context: Context)`.The provided `client_fn` has signature: {'cid': <Parameter "cid: str">}. You can import the `Context` like this: `from flwr.app import Context`[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=809579)[0m             This is a deprecated feature. It will be removed[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=809579)[0m             entirely in future versions of Flower.[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=809576)[0m 
+[36m(ClientAppActor pid=809576)[0m         
+[36m(ClientAppActor pid=809578)[0m 
+[36m(ClientAppActor pid=809578)[0m         
+[36m(ClientAppActor pid=809577)[0m 
+[36m(ClientAppActor pid=809577)[0m         
+[36m(ClientAppActor pid=809575)[0m 
+[36m(ClientAppActor pid=809575)[0m         
+[92mINFO [0m:      aggregate_evaluate: received 5 results and 0 failures
+--- Avaliação Agregada (Clientes) ---
+Loss Média (Clientes): 0.7968 | Acurácia Média (Clientes): 0.7147
+[92mINFO [0m:      
+[92mINFO [0m:      [ROUND 8]
+[92mINFO [0m:      configure_fit: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=809575)[0m Cliente 1: HetNorm=0.3976 | arm=inv | steps=1632 (orig=1632, donor=1) | LR=0.005822 | FedProx=True | seed=908081404[32m [repeated 5x across cluster][0m
+[36m(ClientAppActor pid=809575)[0m 
+[36m(ClientAppActor pid=809575)[0m         
+[36m(ClientAppActor pid=809577)[0m 
+[36m(ClientAppActor pid=809577)[0m         
+[36m(ClientAppActor pid=809578)[0m 
+[36m(ClientAppActor pid=809578)[0m         
+[36m(ClientAppActor pid=809576)[0m 
+[36m(ClientAppActor pid=809576)[0m         
+[36m(ClientAppActor pid=809579)[0m 
+[36m(ClientAppActor pid=809579)[0m         
+[92mINFO [0m:      aggregate_fit: received 5 results and 0 failures
+
+--- Rodada 8 - Avaliação Centralizada (Servidor) ---
+Loss (Servidor): 0.7376 | Acurácia (Servidor): 0.7298
+[92mINFO [0m:      fit progress: (8, 0.737553851222992, {'accuracy': 0.7298, 'loss': 0.737553851222992}, 135.5305647580244)
+[92mINFO [0m:      configure_evaluate: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=809575)[0m 
+[36m(ClientAppActor pid=809575)[0m         
+[36m(ClientAppActor pid=809575)[0m [93mWARNING [0m:   DEPRECATED FEATURE: `client_fn` now expects a signature `def client_fn(context: Context)`.The provided `client_fn` has signature: {'cid': <Parameter "cid: str">}. You can import the `Context` like this: `from flwr.app import Context`[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=809575)[0m             This is a deprecated feature. It will be removed[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=809575)[0m             entirely in future versions of Flower.[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=809577)[0m 
+[36m(ClientAppActor pid=809577)[0m         
+[36m(ClientAppActor pid=809578)[0m 
+[36m(ClientAppActor pid=809578)[0m         
+[36m(ClientAppActor pid=809579)[0m 
+[36m(ClientAppActor pid=809579)[0m         
+[36m(ClientAppActor pid=809576)[0m 
+[36m(ClientAppActor pid=809576)[0m         
+[92mINFO [0m:      aggregate_evaluate: received 5 results and 0 failures
+--- Avaliação Agregada (Clientes) ---
+Loss Média (Clientes): 0.7137 | Acurácia Média (Clientes): 0.7425
+[92mINFO [0m:      
+[92mINFO [0m:      [ROUND 9]
+[92mINFO [0m:      configure_fit: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=809576)[0m Cliente 1: HetNorm=0.3976 | arm=inv | steps=1632 (orig=1632, donor=1) | LR=0.005822 | FedProx=True | seed=752667684[32m [repeated 5x across cluster][0m
+[36m(ClientAppActor pid=809576)[0m 
+[36m(ClientAppActor pid=809576)[0m         
+[36m(ClientAppActor pid=809577)[0m 
+[36m(ClientAppActor pid=809577)[0m         
+[36m(ClientAppActor pid=809578)[0m 
+[36m(ClientAppActor pid=809578)[0m         
+[36m(ClientAppActor pid=809579)[0m 
+[36m(ClientAppActor pid=809579)[0m         
+[36m(ClientAppActor pid=809575)[0m 
+[36m(ClientAppActor pid=809575)[0m         
+[92mINFO [0m:      aggregate_fit: received 5 results and 0 failures
+
+--- Rodada 9 - Avaliação Centralizada (Servidor) ---
+Loss (Servidor): 0.6851 | Acurácia (Servidor): 0.7616
+[92mINFO [0m:      fit progress: (9, 0.6851101799964905, {'accuracy': 0.7616, 'loss': 0.6851101799964905}, 152.0767618890095)
+[92mINFO [0m:      configure_evaluate: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=809576)[0m 
+[36m(ClientAppActor pid=809576)[0m         
+[36m(ClientAppActor pid=809576)[0m [93mWARNING [0m:   DEPRECATED FEATURE: `client_fn` now expects a signature `def client_fn(context: Context)`.The provided `client_fn` has signature: {'cid': <Parameter "cid: str">}. You can import the `Context` like this: `from flwr.app import Context`[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=809576)[0m             This is a deprecated feature. It will be removed[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=809576)[0m             entirely in future versions of Flower.[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=809575)[0m 
+[36m(ClientAppActor pid=809575)[0m         
+[36m(ClientAppActor pid=809579)[0m 
+[36m(ClientAppActor pid=809579)[0m         
+[36m(ClientAppActor pid=809578)[0m 
+[36m(ClientAppActor pid=809578)[0m         
+[36m(ClientAppActor pid=809577)[0m 
+[36m(ClientAppActor pid=809577)[0m         
+[92mINFO [0m:      aggregate_evaluate: received 5 results and 0 failures
+--- Avaliação Agregada (Clientes) ---
+Loss Média (Clientes): 0.6601 | Acurácia Média (Clientes): 0.7679
+[92mINFO [0m:      
+[92mINFO [0m:      [ROUND 10]
+[92mINFO [0m:      configure_fit: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=809577)[0m 
+[36m(ClientAppActor pid=809577)[0m         
+[36m(ClientAppActor pid=809577)[0m Cliente 4: HetNorm=0.7616 | arm=inv | steps=429 (orig=429, donor=4) | LR=0.006311 | FedProx=True | seed=900132141[32m [repeated 5x across cluster][0m
+[36m(ClientAppActor pid=809578)[0m 
+[36m(ClientAppActor pid=809578)[0m         
+[36m(ClientAppActor pid=809579)[0m 
+[36m(ClientAppActor pid=809579)[0m         
+[36m(ClientAppActor pid=809575)[0m 
+[36m(ClientAppActor pid=809575)[0m         
+[36m(ClientAppActor pid=809576)[0m 
+[36m(ClientAppActor pid=809576)[0m         
+[92mINFO [0m:      aggregate_fit: received 5 results and 0 failures
+
+--- Rodada 10 - Avaliação Centralizada (Servidor) ---
+Loss (Servidor): 0.7052 | Acurácia (Servidor): 0.7601
+[92mINFO [0m:      fit progress: (10, 0.7051895935058594, {'accuracy': 0.7601, 'loss': 0.7051895935058594}, 168.90648544899886)
+[92mINFO [0m:      configure_evaluate: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=809576)[0m 
+[36m(ClientAppActor pid=809576)[0m         
+[36m(ClientAppActor pid=809576)[0m [93mWARNING [0m:   DEPRECATED FEATURE: `client_fn` now expects a signature `def client_fn(context: Context)`.The provided `client_fn` has signature: {'cid': <Parameter "cid: str">}. You can import the `Context` like this: `from flwr.app import Context`[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=809576)[0m             This is a deprecated feature. It will be removed[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=809576)[0m             entirely in future versions of Flower.[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=809579)[0m 
+[36m(ClientAppActor pid=809579)[0m         
+[36m(ClientAppActor pid=809575)[0m 
+[36m(ClientAppActor pid=809575)[0m         
+[36m(ClientAppActor pid=809578)[0m 
+[36m(ClientAppActor pid=809578)[0m         
+[36m(ClientAppActor pid=809577)[0m 
+[36m(ClientAppActor pid=809577)[0m         
+[92mINFO [0m:      aggregate_evaluate: received 5 results and 0 failures
+--- Avaliação Agregada (Clientes) ---
+Loss Média (Clientes): 0.6832 | Acurácia Média (Clientes): 0.7629
+[92mINFO [0m:      
+[92mINFO [0m:      [SUMMARY]
+[92mINFO [0m:      Run finished 10 round(s) in 169.78s
+[92mINFO [0m:      	History (loss, distributed):
+[92mINFO [0m:      		round 1: 2.2281949823500873
+[92mINFO [0m:      		round 2: 1.7237230266223387
+[92mINFO [0m:      		round 3: 1.1820915979759938
+[92mINFO [0m:      		round 4: 0.946918931089434
+[92mINFO [0m:      		round 5: 0.8617862957615813
+[92mINFO [0m:      		round 6: 0.7981688331226771
+[92mINFO [0m:      		round 7: 0.7967588353861852
+[92mINFO [0m:      		round 8: 0.7137463479136982
+[92mINFO [0m:      		round 9: 0.6601220436271976
+[92mINFO [0m:      		round 10: 0.683169948069059
+[92mINFO [0m:      	History (loss, centralized):
+[92mINFO [0m:      		round 0: 2.303336143112183
+[92mINFO [0m:      		round 1: 2.2329741802215577
+[92mINFO [0m:      		round 2: 1.7230029022216797
+[92mINFO [0m:      		round 3: 1.1936506484985352
+[92mINFO [0m:      		round 4: 0.9834054656982422
+[92mINFO [0m:      		round 5: 0.8887636665344238
+[92mINFO [0m:      		round 6: 0.8214920286178589
+[92mINFO [0m:      		round 7: 0.8227941699028015
+[92mINFO [0m:      		round 8: 0.737553851222992
+[92mINFO [0m:      		round 9: 0.6851101799964905
+[92mINFO [0m:      		round 10: 0.7051895935058594
+[92mINFO [0m:      	History (metrics, distributed, fit):
+[92mINFO [0m:      	{'avg_epochs_weighted': [(1, 3.89787120572419),
+[92mINFO [0m:      	                         (2, 3.89787120572419),
+[92mINFO [0m:      	                         (3, 3.89787120572419),
+[92mINFO [0m:      	                         (4, 3.89787120572419),
+[92mINFO [0m:      	                         (5, 3.89787120572419),
+[92mINFO [0m:      	                         (6, 3.89787120572419),
+[92mINFO [0m:      	                         (7, 3.89787120572419),
+[92mINFO [0m:      	                         (8, 3.89787120572419),
+[92mINFO [0m:      	                         (9, 3.89787120572419),
+[92mINFO [0m:      	                         (10, 3.89787120572419)],
+[92mINFO [0m:      	 'avg_flops_per_client_round': [(1, 6346220924928.0),
+[92mINFO [0m:      	                                (2, 6346220924928.0),
+[92mINFO [0m:      	                                (3, 6346220924928.0),
+[92mINFO [0m:      	                                (4, 6346220924928.0),
+[92mINFO [0m:      	                                (5, 6346220924928.0),
+[92mINFO [0m:      	                                (6, 6346220924928.0),
+[92mINFO [0m:      	                                (7, 6346220924928.0),
+[92mINFO [0m:      	                                (8, 6346220924928.0),
+[92mINFO [0m:      	                                (9, 6346220924928.0),
+[92mINFO [0m:      	                                (10, 6346220924928.0)],
+[92mINFO [0m:      	 'avg_lr_weighted': [(1, 0.005961623204561473),
+[92mINFO [0m:      	                     (2, 0.005961623204561473),
+[92mINFO [0m:      	                     (3, 0.005961623204561473),
+[92mINFO [0m:      	                     (4, 0.005961623204561473),
+[92mINFO [0m:      	                     (5, 0.005961623204561473),
+[92mINFO [0m:      	                     (6, 0.005961623204561473),
+[92mINFO [0m:      	                     (7, 0.005961623204561473),
+[92mINFO [0m:      	                     (8, 0.005961623204561473),
+[92mINFO [0m:      	                     (9, 0.005961623204561473),
+[92mINFO [0m:      	                     (10, 0.005961623204561473)],
+[92mINFO [0m:      	 'total_flops_round': [(1, 31731104624640),
+[92mINFO [0m:      	                       (2, 31731104624640),
+[92mINFO [0m:      	                       (3, 31731104624640),
+[92mINFO [0m:      	                       (4, 31731104624640),
+[92mINFO [0m:      	                       (5, 31731104624640),
+[92mINFO [0m:      	                       (6, 31731104624640),
+[92mINFO [0m:      	                       (7, 31731104624640),
+[92mINFO [0m:      	                       (8, 31731104624640),
+[92mINFO [0m:      	                       (9, 31731104624640),
+[92mINFO [0m:      	                       (10, 31731104624640)]}
+[92mINFO [0m:      	History (metrics, distributed, evaluate):
+[92mINFO [0m:      	{'accuracy': [(1, 0.15466186474589835),
+[92mINFO [0m:      	              (2, 0.3505402160864346),
+[92mINFO [0m:      	              (3, 0.5682272909163666),
+[92mINFO [0m:      	              (4, 0.6588635454181673),
+[92mINFO [0m:      	              (5, 0.6814725890356143),
+[92mINFO [0m:      	              (6, 0.7066826730692277),
+[92mINFO [0m:      	              (7, 0.7146858743497398),
+[92mINFO [0m:      	              (8, 0.7424969987995198),
+[92mINFO [0m:      	              (9, 0.767907162865146),
+[92mINFO [0m:      	              (10, 0.762905162064826)],
+[92mINFO [0m:      	 'loss': [(1, 2.2281949823500873),
+[92mINFO [0m:      	          (2, 1.7237230266223387),
+[92mINFO [0m:      	          (3, 1.1820915979759938),
+[92mINFO [0m:      	          (4, 0.946918931089434),
+[92mINFO [0m:      	          (5, 0.8617862957615813),
+[92mINFO [0m:      	          (6, 0.7981688331226771),
+[92mINFO [0m:      	          (7, 0.7967588353861852),
+[92mINFO [0m:      	          (8, 0.7137463479136982),
+[92mINFO [0m:      	          (9, 0.6601220436271976),
+[92mINFO [0m:      	          (10, 0.683169948069059)]}
+[92mINFO [0m:      	History (metrics, centralized):
+[92mINFO [0m:      	{'accuracy': [(0, 0.1),
+[92mINFO [0m:      	              (1, 0.1577),
+[92mINFO [0m:      	              (2, 0.3539),
+[92mINFO [0m:      	              (3, 0.5682),
+[92mINFO [0m:      	              (4, 0.6396),
+[92mINFO [0m:      	              (5, 0.6757),
+[92mINFO [0m:      	              (6, 0.6995),
+[92mINFO [0m:      	              (7, 0.7047),
+[92mINFO [0m:      	              (8, 0.7298),
+[92mINFO [0m:      	              (9, 0.7616),
+[92mINFO [0m:      	              (10, 0.7601)],
+[92mINFO [0m:      	 'loss': [(0, 2.303336143112183),
+[92mINFO [0m:      	          (1, 2.2329741802215577),
+[92mINFO [0m:      	          (2, 1.7230029022216797),
+[92mINFO [0m:      	          (3, 1.1936506484985352),
+[92mINFO [0m:      	          (4, 0.9834054656982422),
+[92mINFO [0m:      	          (5, 0.8887636665344238),
+[92mINFO [0m:      	          (6, 0.8214920286178589),
+[92mINFO [0m:      	          (7, 0.8227941699028015),
+[92mINFO [0m:      	          (8, 0.737553851222992),
+[92mINFO [0m:      	          (9, 0.6851101799964905),
+[92mINFO [0m:      	          (10, 0.7051895935058594)]}
+[92mINFO [0m:      
+[r2] artifacts written to /home/tiago/GitHubProjects/fedhad-thesis-2/results/lr_uniform_control/runs/inv__alpha-0.1__seed-61/attempt
+
+Resultados salvos em: /home/tiago/GitHubProjects/fedhad-thesis-2/results/lr_uniform_control/runs/inv__alpha-0.1__seed-61/attempt/report/lru/CIFAR10-Standard/FedHAD__CIFAR10__Mode-STANDARD__Cfg-E1L1F1__Setup-5__Clients-5__Rounds-10__Delay-0_05__Alpha-0_1__Seed-61.txt
+[36m(ClientAppActor pid=809576)[0m Cliente 1: HetNorm=0.3976 | arm=inv | steps=1632 (orig=1632, donor=1) | LR=0.005822 | FedProx=True | seed=689544006[32m [repeated 4x across cluster][0m
+[36m(ClientAppActor pid=809577)[0m [93mWARNING [0m:   DEPRECATED FEATURE: `client_fn` now expects a signature `def client_fn(context: Context)`.The provided `client_fn` has signature: {'cid': <Parameter "cid: str">}. You can import the `Context` like this: `from flwr.app import Context`[32m [repeated 4x across cluster][0m
+[36m(ClientAppActor pid=809577)[0m             This is a deprecated feature. It will be removed[32m [repeated 4x across cluster][0m
+[36m(ClientAppActor pid=809577)[0m             entirely in future versions of Flower.[32m [repeated 4x across cluster][0m

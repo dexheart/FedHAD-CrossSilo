@@ -1,0 +1,133 @@
+{
+  "all_results_reported": "every hypothesis is reported whatever its outcome",
+  "code_fingerprint": "ad5822329de93a5e66c1fa539679d30ad16a54a009c3c428dcc0f8413d5f859a",
+  "decision_rule_accuracy": {
+    "1": "Holm p < 0.05 and the whole 95% bootstrap CI above 0",
+    "2": "otherwise, the whole 90% CI inside (-delta, +delta)",
+    "3": "Holm p < 0.05 and the whole 95% bootstrap CI below 0",
+    "4": "otherwise: inconclusive"
+  },
+  "equivalence_margins_pp": {
+    "0.1": 0.75,
+    "0.2": 0.75
+  },
+  "hypotheses_and_tests": {
+    "H1_paper_partitions": "Level 1, each alpha: (i) rho_s as above, per seed; (ii) size-adjusted: pooled OLS over all client-rounds of all seeds, grad_cos_loo ~ H_k + log n_k + round fixed effects, coefficient of H_k with a 95% cluster bootstrap CI resampling seeds (2,000 resamples) and a two-sided bootstrap p. Within a seed H_k and n_k are often perfectly rank-collinear, so the adjustment uses the variation across seeds. Secondary; Holm over the four tests.",
+    "H1_primary": "Level 2 (equal sizes), arm full_fedhad, each alpha: rho_s = Spearman(H_k, grad_cos_loo) over the client-rounds of seed s. Supports the premise if the median of rho_s is below 0: two-sided Wilcoxon signed-rank on the 30 values, Holm over the two alphas; mean with 95% bootstrap CI reported.",
+    "H1_update": "As H1_primary with upd_cos_loo (Holm within the same family of two).",
+    "H2_decline_by_skew": "Level 3, fedprox_default: per client-round, OLS slope of marg_cos_loo over epochs 1..5; rho_s = Spearman(H_k, slope) within seed. Supports the premise if median rho_s < 0 (steeper decline for skewed clients). Secondary; Holm with H2 over four tests.",
+    "H2_removed_epochs": "Level 3, arm fedprox_default (every client trains 5 epochs), each alpha: for each client-round with E_full(H_k) < 5, d = mean marg_cos_loo over the removed epochs E_full+1..5 minus mean over the kept epochs 1..E_full; d_s = mean over the client-rounds of seed s. Supports the premise if median d_s < 0 (Wilcoxon, Holm over the two alphas). The fraction of removed epochs with marg_lin_loo > 0 (first-order increase of the others' loss) is reported descriptively.",
+    "H3_allocation": "Level 2, each alpha: paired difference in final accuracy, full_fedhad - inv_epochs, over seeds; four-category rule of the R2 batteries with the margin delta of margins.json; Holm over the two alphas. Primary analysis on all 30 seeds; sensitivity analysis on the seeds in which the two allocations differ (in the others the arms execute the same plan).",
+    "H4_classes": "Levels 1 and 3, each alpha: full_fedhad - fedprox_default and full_fedhad - fedprox_tuned for worst-class recall and for macro-F1 (Holm over the eight tests); Level 2: full_fedhad - inv_epochs for the same two metrics (Holm over four). Categories 1, 3 or 'not detected'; no equivalence claim (no margin)."
+  },
+  "measurements": {
+    "class": "per-class recall, worst-class recall and macro-F1 of the global model on the test set",
+    "g": "sum_k p_k g_k (global training objective), p_k = n_k / N",
+    "g_k": "mean cross-entropy gradient over client k's training split at w^t, eval mode",
+    "g_minus_k": "(N g - n_k g_k) / (N - n_k): global gradient without client k",
+    "grad_cos_loo": "cos(g_k, g_-k)",
+    "marg_cos_loo_e": "cos(w_{k,e} - w_{k,e-1}, -g_-k) for local epoch e",
+    "upd_cos_loo": "cos(u_k, -g_-k), u_k = w_k^{t+1} - w^t (trainable parameters)"
+  },
+  "questions": {
+    "Q1_premise": "Is a client's label skew H_k associated with lower alignment between its gradient (and its update) and the gradient of the REST of the federation, when client size cannot explain the association?",
+    "Q2_removed_epochs": "Are the local epochs that FedHAD removes from a client less aligned with the descent direction of the rest of the federation than the epochs it keeps, and is the decline over epochs steeper for more skewed clients?",
+    "Q3_allocation": "With equal client sizes, does assigning more epochs to less skewed clients (FedHAD) give a different final accuracy from the inverse assignment at an identical number of updates?",
+    "Q4_classes": "Does FedHAD sacrifice the worst class or macro-F1 relative to FedProx at the default and at the tuned configuration?"
+  },
+  "substrate": {
+    "batch_size": 32,
+    "clients": 5,
+    "dataset": "CIFAR10",
+    "equal_partition": "every client holds exactly 5000 samples; label proportions ~ Dir(alpha 1_C) sampled without replacement from the class pools, renormalised over non-exhausted classes; np.random.default_rng(seed)",
+    "fedhad": {
+      "base_epochs": 5,
+      "base_lr": 0.01,
+      "epochs_decay": 3.0,
+      "lr_decay": 1.5,
+      "min_epochs": 2,
+      "min_lr": 0.001
+    },
+    "initialization": "common checkpoint per seed, SHA-256 verified (results_reviewer_r2_checkpoints)",
+    "levels": {
+      "1": {
+        "alphas": [
+          0.1,
+          0.01
+        ],
+        "arms": [
+          "full_fedhad"
+        ],
+        "name": "premise_paper_partitions",
+        "partition": "dirichlet"
+      },
+      "2": {
+        "alphas": [
+          0.1,
+          0.2
+        ],
+        "arms": [
+          "full_fedhad",
+          "inv_epochs"
+        ],
+        "name": "equal_size_label_skew",
+        "partition": "equal"
+      },
+      "3": {
+        "alphas": [
+          0.1,
+          0.01
+        ],
+        "arms": [
+          "fedprox_default",
+          "fedprox_tuned"
+        ],
+        "name": "baselines_paper_partitions",
+        "partition": "dirichlet"
+      }
+    },
+    "optimizer": "SGD, momentum 0.9",
+    "proximal_mu": 0.01,
+    "rounds": 10,
+    "seeds": [
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70,
+      71
+    ],
+    "stochastic_trajectory": "worker seeding per (seed, client, round), identical across arms"
+  },
+  "title": "Global-gradient and class-sensitive diagnostic battery for FedHAD",
+  "unit_of_analysis": "the seed: every client-round statistic is first summarised within a seed, so within-run dependence is preserved; 30 values per (level, alpha)",
+  "what_would_contradict": {
+    "H1": "median rho_s >= 0 or not detected on the equal partition",
+    "H2": "removed epochs not less aligned than kept ones",
+    "H3": "inverse epochs not less accurate (categories 2, 3 or 4)"
+  }
+}

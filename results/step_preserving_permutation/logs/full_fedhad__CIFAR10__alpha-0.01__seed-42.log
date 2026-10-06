@@ -1,0 +1,2099 @@
+
+===== 2026-09-30T06:38:59 full_fedhad__CIFAR10__alpha-0.01__seed-42 =====
+Treinando no dispositivo: cuda:0 com o dataset: CIFAR10 | Setup clientes: 5 (num_gpus por cliente=0.2) | SEED=42
+FLOPS por amostra (forward): 6.030e+07 | (forward+backward, 3x): 1.809e+08
+Files already downloaded and verified
+Files already downloaded and verified
+Dividindo o dataset usando a distribuição de Dirichlet com alpha=0.01.
+[r2] arm=full_fedhad | per-client plan=[{'tau': 1059, 'lr': 0.005646447672219065, 'n_batches': 353, 'E_full': 3, 'tau_original': 1059, 'donor': 0, 'perm_id': ''}, {'tau': 1828, 'lr': 0.005931491920536638, 'n_batches': 457, 'E_full': 4, 'tau_original': 1828, 'donor': 1, 'perm_id': ''}, {'tau': 753, 'lr': 0.004980346334590065, 'n_batches': 251, 'E_full': 3, 'tau_original': 753, 'donor': 2, 'perm_id': ''}, {'tau': 130, 'lr': 0.004001264399489184, 'n_batches': 65, 'E_full': 2, 'tau_original': 130, 'donor': 3, 'perm_id': ''}, {'tau': 834, 'lr': 0.00506082565355814, 'n_batches': 278, 'E_full': 3, 'tau_original': 834, 'donor': 4, 'perm_id': ''}]
+Iniciando a simulação de Aprendizado Federado...
+=== Diagnóstico de Medição de GPU ===
+  pynvml_disponivel: True
+  pynvml_versao: 580.178.04
+  gpus_detectadas: 1
+  leitura_potencia_ok: True
+  potencia_atual_W: 31.615
+[93mWARNING [0m:   DEPRECATED FEATURE: flwr.simulation.start_simulation() is deprecated.
+	Instead, use the `flwr run` CLI command to start a local simulation in your Flower app, as shown for example below:
+
+		$ flwr new  # Create a new Flower app from a template
+
+		$ flwr run  # Run the Flower app in Simulation Mode
+
+	Using `start_simulation()` is deprecated.
+
+            This is a deprecated feature. It will be removed
+            entirely in future versions of Flower.
+        
+[92mINFO [0m:      Starting Flower simulation, config: num_rounds=10, no round_timeout
+2026-09-30 06:39:08,882	INFO worker.py:2012 -- Started a local Ray instance.
+/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py:2051: FutureWarning: Tip: In future versions of Ray, Ray will no longer override accelerator visible devices env var if num_gpus=0 or num_gpus=None (default). To enable this behavior and turn off this error message, set RAY_ACCEL_ENV_VAR_OVERRIDE_ON_ZERO=0
+  warnings.warn(
+[92mINFO [0m:      Flower VCE: Ray initialized with resources: {'GPU': 1.0, 'object_store_memory': 78105732710.0, 'node:10.129.64.100': 1.0, 'node:__internal_head__': 1.0, 'memory': 182246709658.0, 'accelerator_type:A40': 1.0, 'CPU': 64.0}
+[92mINFO [0m:      Optimize your simulation with Flower VCE: https://flower.ai/docs/framework/how-to-run-simulations.html
+/home/tiago/GitHubProjects/fedhad-thesis-2/reviewer_r2_controls/code/fedhad_r2.py:2037: UserWarning: No `num_cpus` specified in `client_resources`. Using `num_cpus=1` for each client.
+  history = fl.simulation.start_simulation(
+[92mINFO [0m:      Flower VCE: Resources for each Virtual Client: {'num_gpus': 0.2, 'num_cpus': 1}
+[92mINFO [0m:      Flower VCE: Creating VirtualClientEngineActorPool with 5 actors
+[92mINFO [0m:      [INIT]
+[92mINFO [0m:      Using initial global parameters provided by strategy
+[92mINFO [0m:      Starting evaluation of initial global parameters
+
+--- Rodada 0 - Avaliação Centralizada (Servidor) ---
+Loss (Servidor): 2.3033 | Acurácia (Servidor): 0.1036
+[92mINFO [0m:      initial parameters (loss, other metrics): 2.3033205837249757, {'accuracy': 0.1036, 'loss': 2.3033205837249757}
+[92mINFO [0m:      
+[92mINFO [0m:      [ROUND 1]
+[92mINFO [0m:      configure_fit: strategy sampled 5 clients (out of 5)
+[91mERROR [0m:     Traceback (most recent call last):
+  File "python/ray/_raylet.pyx", line 835, in ray._raylet.prepare_args_internal
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/serialization.py", line 788, in serialize
+    return self._serialize_to_msgpack(value)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/serialization.py", line 661, in _serialize_to_msgpack
+    pickle5_serialized_object = self._serialize_to_pickle5(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/serialization.py", line 608, in _serialize_to_pickle5
+    raise e
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/serialization.py", line 603, in _serialize_to_pickle5
+    inband = pickle.dumps(
+             ^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/cloudpickle/cloudpickle.py", line 1544, in dumps
+    cp.dump(obj)
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/cloudpickle/cloudpickle.py", line 1313, in dump
+    return super().dump(obj)
+           ^^^^^^^^^^^^^^^^^
+TypeError: cannot pickle 'CudnnModule' object
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 85, in _submit_job
+    self.actor_pool.submit_client_job(
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 246, in submit_client_job
+    self.submit(actor_fn, job)
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 224, in submit
+    future = fn(actor, app_fn, mssg, cid, context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 86, in <lambda>
+    lambda a, a_fn, mssg, partition_id, context: a.run.remote(
+                                                 ^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/actor.py", line 917, in remote
+    return self._remote(args, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/util/tracing/tracing_helper.py", line 422, in _start_span
+    return method(self, args, kwargs, *_args, **_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/actor.py", line 1114, in _remote
+    object_refs = invocation(args, kwargs)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/actor.py", line 1093, in invocation
+    return dst_actor._actor_method_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/actor.py", line 2411, in _actor_method_call
+    object_refs = worker.core_worker.submit_actor_task(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "python/ray/_raylet.pyx", line 3823, in ray._raylet.CoreWorker.submit_actor_task
+  File "python/ray/_raylet.pyx", line 3829, in ray._raylet.CoreWorker.submit_actor_task
+  File "python/ray/_raylet.pyx", line 764, in ray._raylet.prepare_args_and_increment_put_refs
+  File "python/ray/_raylet.pyx", line 755, in ray._raylet.prepare_args_and_increment_put_refs
+  File "python/ray/_raylet.pyx", line 844, in ray._raylet.prepare_args_internal
+TypeError: Could not serialize the argument <function RayActorClientProxy.__init__.<locals>._load_app at 0x7eee34367ec0> for a task or actor flwr.simulation.ray_transport.ray_actor.ClientAppActor.run:
+================================================================================
+Checking Serializability of <function RayActorClientProxy.__init__.<locals>._load_app at 0x7eee34367ec0>
+================================================================================
+[31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+Detected 1 global variables. Checking serializability...
+    Serializing 'ClientApp' <class 'flwr.clientapp.client_app.ClientApp'>...
+Detected 1 nonlocal variables. Checking serializability...
+    Serializing 'client_fn' <function client_fn at 0x7eed62a3df80>...
+    [31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+    Detected 5 global variables. Checking serializability...
+        Serializing 'get_net' <function get_net at 0x7eed62a3c680>...
+        Serializing 'DEVICE' cuda:0...
+        Serializing 'trainloaders' [<torch.utils.data.dataloader.DataLoader object at 0x7eed62a02120>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a021e0>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02360>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a024e0>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02660>]...
+        Serializing 'valloaders' [<torch.utils.data.dataloader.DataLoader object at 0x7eec9d817110>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02210>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02390>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02510>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02690>]...
+        Serializing 'FlowerClient' <class '__main__.FlowerClient'>...
+        [31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+            Serializing '__init__' <function FlowerClient.__init__ at 0x7eed62a3e020>...
+            Serializing 'evaluate' <function FlowerClient.evaluate at 0x7eed62a3e2a0>...
+            Serializing 'fit' <function FlowerClient.fit at 0x7eed62a3e200>...
+            [31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+            Serializing '_abc_impl' <_abc._abc_data object at 0x7eed62a47e40>...
+            [31m!!! FAIL[39m serialization: cannot pickle '_abc._abc_data' object
+================================================================================
+Variable: 
+
+	[1mFailTuple(fit [obj=<function FlowerClient.fit at 0x7eed62a3e200>, parent=<class '__main__.FlowerClient'>])
+FailTuple(_abc_impl [obj=<_abc._abc_data object at 0x7eed62a47e40>, parent=<class '__main__.FlowerClient'>])[0m
+
+was found to be non-serializable. There may be multiple other undetected variables that were non-serializable. 
+Consider either removing the instantiation/imports of these variables or moving the instantiation into the scope of the function/class. 
+================================================================================
+Check https://docs.ray.io/en/master/ray-core/objects/serialization.html#troubleshooting for more information.
+If you have any suggestions on how to improve this error message, please reach out to the Ray developers on github.com/ray-project/ray/issues/
+================================================================================
+
+
+[91mERROR [0m:     Could not serialize the argument <function RayActorClientProxy.__init__.<locals>._load_app at 0x7eee34367ec0> for a task or actor flwr.simulation.ray_transport.ray_actor.ClientAppActor.run:
+================================================================================
+Checking Serializability of <function RayActorClientProxy.__init__.<locals>._load_app at 0x7eee34367ec0>
+================================================================================
+[31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+Detected 1 global variables. Checking serializability...
+    Serializing 'ClientApp' <class 'flwr.clientapp.client_app.ClientApp'>...
+Detected 1 nonlocal variables. Checking serializability...
+    Serializing 'client_fn' <function client_fn at 0x7eed62a3df80>...
+    [31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+    Detected 5 global variables. Checking serializability...
+        Serializing 'get_net' <function get_net at 0x7eed62a3c680>...
+        Serializing 'DEVICE' cuda:0...
+        Serializing 'trainloaders' [<torch.utils.data.dataloader.DataLoader object at 0x7eed62a02120>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a021e0>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02360>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a024e0>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02660>]...
+        Serializing 'valloaders' [<torch.utils.data.dataloader.DataLoader object at 0x7eec9d817110>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02210>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02390>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02510>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02690>]...
+        Serializing 'FlowerClient' <class '__main__.FlowerClient'>...
+        [31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+            Serializing '__init__' <function FlowerClient.__init__ at 0x7eed62a3e020>...
+            Serializing 'evaluate' <function FlowerClient.evaluate at 0x7eed62a3e2a0>...
+            Serializing 'fit' <function FlowerClient.fit at 0x7eed62a3e200>...
+            [31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+            Serializing '_abc_impl' <_abc._abc_data object at 0x7eed62a47e40>...
+            [31m!!! FAIL[39m serialization: cannot pickle '_abc._abc_data' object
+================================================================================
+Variable: 
+
+	[1mFailTuple(fit [obj=<function FlowerClient.fit at 0x7eed62a3e200>, parent=<class '__main__.FlowerClient'>])
+FailTuple(_abc_impl [obj=<_abc._abc_data object at 0x7eed62a47e40>, parent=<class '__main__.FlowerClient'>])[0m
+
+was found to be non-serializable. There may be multiple other undetected variables that were non-serializable. 
+Consider either removing the instantiation/imports of these variables or moving the instantiation into the scope of the function/class. 
+================================================================================
+Check https://docs.ray.io/en/master/ray-core/objects/serialization.html#troubleshooting for more information.
+If you have any suggestions on how to improve this error message, please reach out to the Ray developers on github.com/ray-project/ray/issues/
+================================================================================
+
+[91mERROR [0m:     Traceback (most recent call last):
+  File "python/ray/_raylet.pyx", line 835, in ray._raylet.prepare_args_internal
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/serialization.py", line 788, in serialize
+    return self._serialize_to_msgpack(value)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/serialization.py", line 661, in _serialize_to_msgpack
+    pickle5_serialized_object = self._serialize_to_pickle5(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/serialization.py", line 608, in _serialize_to_pickle5
+    raise e
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/serialization.py", line 603, in _serialize_to_pickle5
+    inband = pickle.dumps(
+             ^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/cloudpickle/cloudpickle.py", line 1544, in dumps
+    cp.dump(obj)
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/cloudpickle/cloudpickle.py", line 1313, in dump
+    return super().dump(obj)
+           ^^^^^^^^^^^^^^^^^
+TypeError: cannot pickle 'CudnnModule' object
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 85, in _submit_job
+    self.actor_pool.submit_client_job(
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 246, in submit_client_job
+    self.submit(actor_fn, job)
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 224, in submit
+    future = fn(actor, app_fn, mssg, cid, context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 86, in <lambda>
+    lambda a, a_fn, mssg, partition_id, context: a.run.remote(
+                                                 ^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/actor.py", line 917, in remote
+    return self._remote(args, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/util/tracing/tracing_helper.py", line 422, in _start_span
+    return method(self, args, kwargs, *_args, **_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/actor.py", line 1114, in _remote
+    object_refs = invocation(args, kwargs)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/actor.py", line 1093, in invocation
+    return dst_actor._actor_method_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/actor.py", line 2411, in _actor_method_call
+    object_refs = worker.core_worker.submit_actor_task(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "python/ray/_raylet.pyx", line 3823, in ray._raylet.CoreWorker.submit_actor_task
+  File "python/ray/_raylet.pyx", line 3829, in ray._raylet.CoreWorker.submit_actor_task
+  File "python/ray/_raylet.pyx", line 764, in ray._raylet.prepare_args_and_increment_put_refs
+  File "python/ray/_raylet.pyx", line 755, in ray._raylet.prepare_args_and_increment_put_refs
+  File "python/ray/_raylet.pyx", line 844, in ray._raylet.prepare_args_internal
+TypeError: Could not serialize the argument <function RayActorClientProxy.__init__.<locals>._load_app at 0x7eee34367ce0> for a task or actor flwr.simulation.ray_transport.ray_actor.ClientAppActor.run:
+================================================================================
+Checking Serializability of <function RayActorClientProxy.__init__.<locals>._load_app at 0x7eee34367ce0>
+================================================================================
+[31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+Detected 1 global variables. Checking serializability...
+    Serializing 'ClientApp' <class 'flwr.clientapp.client_app.ClientApp'>...
+Detected 1 nonlocal variables. Checking serializability...
+    Serializing 'client_fn' <function client_fn at 0x7eed62a3df80>...
+    [31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+    Detected 5 global variables. Checking serializability...
+        Serializing 'get_net' <function get_net at 0x7eed62a3c680>...
+        Serializing 'DEVICE' cuda:0...
+        Serializing 'trainloaders' [<torch.utils.data.dataloader.DataLoader object at 0x7eed62a02120>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a021e0>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02360>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a024e0>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02660>]...
+        Serializing 'valloaders' [<torch.utils.data.dataloader.DataLoader object at 0x7eec9d817110>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02210>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02390>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02510>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02690>]...
+        Serializing 'FlowerClient' <class '__main__.FlowerClient'>...
+        [31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+            Serializing '__init__' <function FlowerClient.__init__ at 0x7eed62a3e020>...
+            Serializing 'evaluate' <function FlowerClient.evaluate at 0x7eed62a3e2a0>...
+            Serializing 'fit' <function FlowerClient.fit at 0x7eed62a3e200>...
+            [31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+            Serializing '_abc_impl' <_abc._abc_data object at 0x7eed62a47e40>...
+            [31m!!! FAIL[39m serialization: cannot pickle '_abc._abc_data' object
+================================================================================
+Variable: 
+
+	[1mFailTuple(_abc_impl [obj=<_abc._abc_data object at 0x7eed62a47e40>, parent=<class '__main__.FlowerClient'>])
+FailTuple(fit [obj=<function FlowerClient.fit at 0x7eed62a3e200>, parent=<class '__main__.FlowerClient'>])[0m
+
+was found to be non-serializable. There may be multiple other undetected variables that were non-serializable. 
+Consider either removing the instantiation/imports of these variables or moving the instantiation into the scope of the function/class. 
+================================================================================
+Check https://docs.ray.io/en/master/ray-core/objects/serialization.html#troubleshooting for more information.
+If you have any suggestions on how to improve this error message, please reach out to the Ray developers on github.com/ray-project/ray/issues/
+================================================================================
+
+
+[91mERROR [0m:     Could not serialize the argument <function RayActorClientProxy.__init__.<locals>._load_app at 0x7eee34367ce0> for a task or actor flwr.simulation.ray_transport.ray_actor.ClientAppActor.run:
+================================================================================
+Checking Serializability of <function RayActorClientProxy.__init__.<locals>._load_app at 0x7eee34367ce0>
+================================================================================
+[31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+Detected 1 global variables. Checking serializability...
+    Serializing 'ClientApp' <class 'flwr.clientapp.client_app.ClientApp'>...
+Detected 1 nonlocal variables. Checking serializability...
+    Serializing 'client_fn' <function client_fn at 0x7eed62a3df80>...
+    [31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+    Detected 5 global variables. Checking serializability...
+        Serializing 'get_net' <function get_net at 0x7eed62a3c680>...
+        Serializing 'DEVICE' cuda:0...
+        Serializing 'trainloaders' [<torch.utils.data.dataloader.DataLoader object at 0x7eed62a02120>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a021e0>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02360>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a024e0>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02660>]...
+        Serializing 'valloaders' [<torch.utils.data.dataloader.DataLoader object at 0x7eec9d817110>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02210>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02390>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02510>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02690>]...
+        Serializing 'FlowerClient' <class '__main__.FlowerClient'>...
+        [31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+            Serializing '__init__' <function FlowerClient.__init__ at 0x7eed62a3e020>...
+            Serializing 'evaluate' <function FlowerClient.evaluate at 0x7eed62a3e2a0>...
+            Serializing 'fit' <function FlowerClient.fit at 0x7eed62a3e200>...
+            [31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+            Serializing '_abc_impl' <_abc._abc_data object at 0x7eed62a47e40>...
+            [31m!!! FAIL[39m serialization: cannot pickle '_abc._abc_data' object
+================================================================================
+Variable: 
+
+	[1mFailTuple(_abc_impl [obj=<_abc._abc_data object at 0x7eed62a47e40>, parent=<class '__main__.FlowerClient'>])
+FailTuple(fit [obj=<function FlowerClient.fit at 0x7eed62a3e200>, parent=<class '__main__.FlowerClient'>])[0m
+
+was found to be non-serializable. There may be multiple other undetected variables that were non-serializable. 
+Consider either removing the instantiation/imports of these variables or moving the instantiation into the scope of the function/class. 
+================================================================================
+Check https://docs.ray.io/en/master/ray-core/objects/serialization.html#troubleshooting for more information.
+If you have any suggestions on how to improve this error message, please reach out to the Ray developers on github.com/ray-project/ray/issues/
+================================================================================
+
+[91mERROR [0m:     Traceback (most recent call last):
+  File "python/ray/_raylet.pyx", line 835, in ray._raylet.prepare_args_internal
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/serialization.py", line 788, in serialize
+    return self._serialize_to_msgpack(value)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/serialization.py", line 661, in _serialize_to_msgpack
+    pickle5_serialized_object = self._serialize_to_pickle5(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/serialization.py", line 608, in _serialize_to_pickle5
+    raise e
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/serialization.py", line 603, in _serialize_to_pickle5
+    inband = pickle.dumps(
+             ^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/cloudpickle/cloudpickle.py", line 1544, in dumps
+    cp.dump(obj)
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/cloudpickle/cloudpickle.py", line 1313, in dump
+    return super().dump(obj)
+           ^^^^^^^^^^^^^^^^^
+TypeError: cannot pickle 'CudnnModule' object
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 85, in _submit_job
+    self.actor_pool.submit_client_job(
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 246, in submit_client_job
+    self.submit(actor_fn, job)
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 224, in submit
+    future = fn(actor, app_fn, mssg, cid, context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 86, in <lambda>
+    lambda a, a_fn, mssg, partition_id, context: a.run.remote(
+                                                 ^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/actor.py", line 917, in remote
+    return self._remote(args, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/util/tracing/tracing_helper.py", line 422, in _start_span
+    return method(self, args, kwargs, *_args, **_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/actor.py", line 1114, in _remote
+    object_refs = invocation(args, kwargs)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/actor.py", line 1093, in invocation
+    return dst_actor._actor_method_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/actor.py", line 2411, in _actor_method_call
+    object_refs = worker.core_worker.submit_actor_task(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "python/ray/_raylet.pyx", line 3823, in ray._raylet.CoreWorker.submit_actor_task
+  File "python/ray/_raylet.pyx", line 3829, in ray._raylet.CoreWorker.submit_actor_task
+  File "python/ray/_raylet.pyx", line 764, in ray._raylet.prepare_args_and_increment_put_refs
+  File "python/ray/_raylet.pyx", line 755, in ray._raylet.prepare_args_and_increment_put_refs
+  File "python/ray/_raylet.pyx", line 844, in ray._raylet.prepare_args_internal
+TypeError: Could not serialize the argument <function RayActorClientProxy.__init__.<locals>._load_app at 0x7eee17e016c0> for a task or actor flwr.simulation.ray_transport.ray_actor.ClientAppActor.run:
+================================================================================
+Checking Serializability of <function RayActorClientProxy.__init__.<locals>._load_app at 0x7eee17e016c0>
+================================================================================
+[31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+Detected 1 global variables. Checking serializability...
+    Serializing 'ClientApp' <class 'flwr.clientapp.client_app.ClientApp'>...
+Detected 1 nonlocal variables. Checking serializability...
+    Serializing 'client_fn' <function client_fn at 0x7eed62a3df80>...
+    [31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+    Detected 5 global variables. Checking serializability...
+        Serializing 'get_net' <function get_net at 0x7eed62a3c680>...
+        Serializing 'DEVICE' cuda:0...
+        Serializing 'trainloaders' [<torch.utils.data.dataloader.DataLoader object at 0x7eed62a02120>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a021e0>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02360>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a024e0>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02660>]...
+        Serializing 'valloaders' [<torch.utils.data.dataloader.DataLoader object at 0x7eec9d817110>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02210>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02390>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02510>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02690>]...
+        Serializing 'FlowerClient' <class '__main__.FlowerClient'>...
+        [31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+            Serializing '__init__' <function FlowerClient.__init__ at 0x7eed62a3e020>...
+            Serializing 'evaluate' <function FlowerClient.evaluate at 0x7eed62a3e2a0>...
+            Serializing 'fit' <function FlowerClient.fit at 0x7eed62a3e200>...
+            [31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+            Serializing '_abc_impl' <_abc._abc_data object at 0x7eed62a47e40>...
+            [31m!!! FAIL[39m serialization: cannot pickle '_abc._abc_data' object
+================================================================================
+Variable: 
+
+	[1mFailTuple(_abc_impl [obj=<_abc._abc_data object at 0x7eed62a47e40>, parent=<class '__main__.FlowerClient'>])
+FailTuple(fit [obj=<function FlowerClient.fit at 0x7eed62a3e200>, parent=<class '__main__.FlowerClient'>])[0m
+
+was found to be non-serializable. There may be multiple other undetected variables that were non-serializable. 
+Consider either removing the instantiation/imports of these variables or moving the instantiation into the scope of the function/class. 
+================================================================================
+Check https://docs.ray.io/en/master/ray-core/objects/serialization.html#troubleshooting for more information.
+If you have any suggestions on how to improve this error message, please reach out to the Ray developers on github.com/ray-project/ray/issues/
+================================================================================
+
+
+[91mERROR [0m:     Could not serialize the argument <function RayActorClientProxy.__init__.<locals>._load_app at 0x7eee17e016c0> for a task or actor flwr.simulation.ray_transport.ray_actor.ClientAppActor.run:
+================================================================================
+Checking Serializability of <function RayActorClientProxy.__init__.<locals>._load_app at 0x7eee17e016c0>
+================================================================================
+[31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+Detected 1 global variables. Checking serializability...
+    Serializing 'ClientApp' <class 'flwr.clientapp.client_app.ClientApp'>...
+Detected 1 nonlocal variables. Checking serializability...
+    Serializing 'client_fn' <function client_fn at 0x7eed62a3df80>...
+    [31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+    Detected 5 global variables. Checking serializability...
+        Serializing 'get_net' <function get_net at 0x7eed62a3c680>...
+        Serializing 'DEVICE' cuda:0...
+        Serializing 'trainloaders' [<torch.utils.data.dataloader.DataLoader object at 0x7eed62a02120>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a021e0>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02360>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a024e0>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02660>]...
+        Serializing 'valloaders' [<torch.utils.data.dataloader.DataLoader object at 0x7eec9d817110>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02210>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02390>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02510>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02690>]...
+        Serializing 'FlowerClient' <class '__main__.FlowerClient'>...
+        [31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+            Serializing '__init__' <function FlowerClient.__init__ at 0x7eed62a3e020>...
+            Serializing 'evaluate' <function FlowerClient.evaluate at 0x7eed62a3e2a0>...
+            Serializing 'fit' <function FlowerClient.fit at 0x7eed62a3e200>...
+            [31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+            Serializing '_abc_impl' <_abc._abc_data object at 0x7eed62a47e40>...
+            [31m!!! FAIL[39m serialization: cannot pickle '_abc._abc_data' object
+================================================================================
+Variable: 
+
+	[1mFailTuple(_abc_impl [obj=<_abc._abc_data object at 0x7eed62a47e40>, parent=<class '__main__.FlowerClient'>])
+FailTuple(fit [obj=<function FlowerClient.fit at 0x7eed62a3e200>, parent=<class '__main__.FlowerClient'>])[0m
+
+was found to be non-serializable. There may be multiple other undetected variables that were non-serializable. 
+Consider either removing the instantiation/imports of these variables or moving the instantiation into the scope of the function/class. 
+================================================================================
+Check https://docs.ray.io/en/master/ray-core/objects/serialization.html#troubleshooting for more information.
+If you have any suggestions on how to improve this error message, please reach out to the Ray developers on github.com/ray-project/ray/issues/
+================================================================================
+
+[91mERROR [0m:     Traceback (most recent call last):
+  File "python/ray/_raylet.pyx", line 835, in ray._raylet.prepare_args_internal
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/serialization.py", line 788, in serialize
+    return self._serialize_to_msgpack(value)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/serialization.py", line 661, in _serialize_to_msgpack
+    pickle5_serialized_object = self._serialize_to_pickle5(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/serialization.py", line 608, in _serialize_to_pickle5
+    raise e
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/serialization.py", line 603, in _serialize_to_pickle5
+    inband = pickle.dumps(
+             ^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/cloudpickle/cloudpickle.py", line 1544, in dumps
+    cp.dump(obj)
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/cloudpickle/cloudpickle.py", line 1313, in dump
+    return super().dump(obj)
+           ^^^^^^^^^^^^^^^^^
+TypeError: cannot pickle 'CudnnModule' object
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 85, in _submit_job
+    self.actor_pool.submit_client_job(
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 246, in submit_client_job
+    self.submit(actor_fn, job)
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 224, in submit
+    future = fn(actor, app_fn, mssg, cid, context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 86, in <lambda>
+    lambda a, a_fn, mssg, partition_id, context: a.run.remote(
+                                                 ^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/actor.py", line 917, in remote
+    return self._remote(args, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/util/tracing/tracing_helper.py", line 422, in _start_span
+    return method(self, args, kwargs, *_args, **_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/actor.py", line 1114, in _remote
+    object_refs = invocation(args, kwargs)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/actor.py", line 1093, in invocation
+    return dst_actor._actor_method_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/actor.py", line 2411, in _actor_method_call
+    object_refs = worker.core_worker.submit_actor_task(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "python/ray/_raylet.pyx", line 3823, in ray._raylet.CoreWorker.submit_actor_task
+  File "python/ray/_raylet.pyx", line 3829, in ray._raylet.CoreWorker.submit_actor_task
+  File "python/ray/_raylet.pyx", line 764, in ray._raylet.prepare_args_and_increment_put_refs
+  File "python/ray/_raylet.pyx", line 755, in ray._raylet.prepare_args_and_increment_put_refs
+  File "python/ray/_raylet.pyx", line 844, in ray._raylet.prepare_args_internal
+TypeError: Could not serialize the argument <function RayActorClientProxy.__init__.<locals>._load_app at 0x7eee34367d80> for a task or actor flwr.simulation.ray_transport.ray_actor.ClientAppActor.run:
+================================================================================
+Checking Serializability of <function RayActorClientProxy.__init__.<locals>._load_app at 0x7eee34367d80>
+================================================================================
+[31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+Detected 1 global variables. Checking serializability...
+    Serializing 'ClientApp' <class 'flwr.clientapp.client_app.ClientApp'>...
+Detected 1 nonlocal variables. Checking serializability...
+    Serializing 'client_fn' <function client_fn at 0x7eed62a3df80>...
+    [31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+    Detected 5 global variables. Checking serializability...
+        Serializing 'get_net' <function get_net at 0x7eed62a3c680>...
+        Serializing 'DEVICE' cuda:0...
+        Serializing 'trainloaders' [<torch.utils.data.dataloader.DataLoader object at 0x7eed62a02120>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a021e0>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02360>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a024e0>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02660>]...
+        Serializing 'valloaders' [<torch.utils.data.dataloader.DataLoader object at 0x7eec9d817110>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02210>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02390>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02510>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02690>]...
+        Serializing 'FlowerClient' <class '__main__.FlowerClient'>...
+        [31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+            Serializing '__init__' <function FlowerClient.__init__ at 0x7eed62a3e020>...
+            Serializing 'evaluate' <function FlowerClient.evaluate at 0x7eed62a3e2a0>...
+            Serializing 'fit' <function FlowerClient.fit at 0x7eed62a3e200>...
+            [31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+            Serializing '_abc_impl' <_abc._abc_data object at 0x7eed62a47e40>...
+            [31m!!! FAIL[39m serialization: cannot pickle '_abc._abc_data' object
+================================================================================
+Variable: 
+
+	[1mFailTuple(fit [obj=<function FlowerClient.fit at 0x7eed62a3e200>, parent=<class '__main__.FlowerClient'>])
+FailTuple(_abc_impl [obj=<_abc._abc_data object at 0x7eed62a47e40>, parent=<class '__main__.FlowerClient'>])[0m
+
+was found to be non-serializable. There may be multiple other undetected variables that were non-serializable. 
+Consider either removing the instantiation/imports of these variables or moving the instantiation into the scope of the function/class. 
+================================================================================
+Check https://docs.ray.io/en/master/ray-core/objects/serialization.html#troubleshooting for more information.
+If you have any suggestions on how to improve this error message, please reach out to the Ray developers on github.com/ray-project/ray/issues/
+================================================================================
+
+
+[91mERROR [0m:     Could not serialize the argument <function RayActorClientProxy.__init__.<locals>._load_app at 0x7eee34367d80> for a task or actor flwr.simulation.ray_transport.ray_actor.ClientAppActor.run:
+================================================================================
+Checking Serializability of <function RayActorClientProxy.__init__.<locals>._load_app at 0x7eee34367d80>
+================================================================================
+[31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+Detected 1 global variables. Checking serializability...
+    Serializing 'ClientApp' <class 'flwr.clientapp.client_app.ClientApp'>...
+Detected 1 nonlocal variables. Checking serializability...
+    Serializing 'client_fn' <function client_fn at 0x7eed62a3df80>...
+    [31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+    Detected 5 global variables. Checking serializability...
+        Serializing 'get_net' <function get_net at 0x7eed62a3c680>...
+        Serializing 'DEVICE' cuda:0...
+        Serializing 'trainloaders' [<torch.utils.data.dataloader.DataLoader object at 0x7eed62a02120>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a021e0>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02360>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a024e0>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02660>]...
+        Serializing 'valloaders' [<torch.utils.data.dataloader.DataLoader object at 0x7eec9d817110>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02210>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02390>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02510>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02690>]...
+        Serializing 'FlowerClient' <class '__main__.FlowerClient'>...
+        [31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+            Serializing '__init__' <function FlowerClient.__init__ at 0x7eed62a3e020>...
+            Serializing 'evaluate' <function FlowerClient.evaluate at 0x7eed62a3e2a0>...
+            Serializing 'fit' <function FlowerClient.fit at 0x7eed62a3e200>...
+            [31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+            Serializing '_abc_impl' <_abc._abc_data object at 0x7eed62a47e40>...
+            [31m!!! FAIL[39m serialization: cannot pickle '_abc._abc_data' object
+================================================================================
+Variable: 
+
+	[1mFailTuple(fit [obj=<function FlowerClient.fit at 0x7eed62a3e200>, parent=<class '__main__.FlowerClient'>])
+FailTuple(_abc_impl [obj=<_abc._abc_data object at 0x7eed62a47e40>, parent=<class '__main__.FlowerClient'>])[0m
+
+was found to be non-serializable. There may be multiple other undetected variables that were non-serializable. 
+Consider either removing the instantiation/imports of these variables or moving the instantiation into the scope of the function/class. 
+================================================================================
+Check https://docs.ray.io/en/master/ray-core/objects/serialization.html#troubleshooting for more information.
+If you have any suggestions on how to improve this error message, please reach out to the Ray developers on github.com/ray-project/ray/issues/
+================================================================================
+
+[91mERROR [0m:     Traceback (most recent call last):
+  File "python/ray/_raylet.pyx", line 835, in ray._raylet.prepare_args_internal
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/serialization.py", line 788, in serialize
+    return self._serialize_to_msgpack(value)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/serialization.py", line 661, in _serialize_to_msgpack
+    pickle5_serialized_object = self._serialize_to_pickle5(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/serialization.py", line 608, in _serialize_to_pickle5
+    raise e
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/serialization.py", line 603, in _serialize_to_pickle5
+    inband = pickle.dumps(
+             ^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/cloudpickle/cloudpickle.py", line 1544, in dumps
+    cp.dump(obj)
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/cloudpickle/cloudpickle.py", line 1313, in dump
+    return super().dump(obj)
+           ^^^^^^^^^^^^^^^^^
+TypeError: cannot pickle 'CudnnModule' object
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 85, in _submit_job
+    self.actor_pool.submit_client_job(
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 246, in submit_client_job
+    self.submit(actor_fn, job)
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 224, in submit
+    future = fn(actor, app_fn, mssg, cid, context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 86, in <lambda>
+    lambda a, a_fn, mssg, partition_id, context: a.run.remote(
+                                                 ^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/actor.py", line 917, in remote
+    return self._remote(args, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/util/tracing/tracing_helper.py", line 422, in _start_span
+    return method(self, args, kwargs, *_args, **_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/actor.py", line 1114, in _remote
+    object_refs = invocation(args, kwargs)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/actor.py", line 1093, in invocation
+    return dst_actor._actor_method_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/actor.py", line 2411, in _actor_method_call
+    object_refs = worker.core_worker.submit_actor_task(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "python/ray/_raylet.pyx", line 3823, in ray._raylet.CoreWorker.submit_actor_task
+  File "python/ray/_raylet.pyx", line 3829, in ray._raylet.CoreWorker.submit_actor_task
+  File "python/ray/_raylet.pyx", line 764, in ray._raylet.prepare_args_and_increment_put_refs
+  File "python/ray/_raylet.pyx", line 755, in ray._raylet.prepare_args_and_increment_put_refs
+  File "python/ray/_raylet.pyx", line 844, in ray._raylet.prepare_args_internal
+TypeError: Could not serialize the argument <function RayActorClientProxy.__init__.<locals>._load_app at 0x7eee34367e20> for a task or actor flwr.simulation.ray_transport.ray_actor.ClientAppActor.run:
+================================================================================
+Checking Serializability of <function RayActorClientProxy.__init__.<locals>._load_app at 0x7eee34367e20>
+================================================================================
+[31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+Detected 1 global variables. Checking serializability...
+    Serializing 'ClientApp' <class 'flwr.clientapp.client_app.ClientApp'>...
+Detected 1 nonlocal variables. Checking serializability...
+    Serializing 'client_fn' <function client_fn at 0x7eed62a3df80>...
+    [31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+    Detected 5 global variables. Checking serializability...
+        Serializing 'get_net' <function get_net at 0x7eed62a3c680>...
+        Serializing 'DEVICE' cuda:0...
+        Serializing 'trainloaders' [<torch.utils.data.dataloader.DataLoader object at 0x7eed62a02120>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a021e0>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02360>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a024e0>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02660>]...
+        Serializing 'valloaders' [<torch.utils.data.dataloader.DataLoader object at 0x7eec9d817110>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02210>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02390>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02510>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02690>]...
+        Serializing 'FlowerClient' <class '__main__.FlowerClient'>...
+        [31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+            Serializing '__init__' <function FlowerClient.__init__ at 0x7eed62a3e020>...
+            Serializing 'evaluate' <function FlowerClient.evaluate at 0x7eed62a3e2a0>...
+            Serializing 'fit' <function FlowerClient.fit at 0x7eed62a3e200>...
+            [31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+            Serializing '_abc_impl' <_abc._abc_data object at 0x7eed62a47e40>...
+            [31m!!! FAIL[39m serialization: cannot pickle '_abc._abc_data' object
+================================================================================
+Variable: 
+
+	[1mFailTuple(_abc_impl [obj=<_abc._abc_data object at 0x7eed62a47e40>, parent=<class '__main__.FlowerClient'>])
+FailTuple(fit [obj=<function FlowerClient.fit at 0x7eed62a3e200>, parent=<class '__main__.FlowerClient'>])[0m
+
+was found to be non-serializable. There may be multiple other undetected variables that were non-serializable. 
+Consider either removing the instantiation/imports of these variables or moving the instantiation into the scope of the function/class. 
+================================================================================
+Check https://docs.ray.io/en/master/ray-core/objects/serialization.html#troubleshooting for more information.
+If you have any suggestions on how to improve this error message, please reach out to the Ray developers on github.com/ray-project/ray/issues/
+================================================================================
+
+
+[91mERROR [0m:     Could not serialize the argument <function RayActorClientProxy.__init__.<locals>._load_app at 0x7eee34367e20> for a task or actor flwr.simulation.ray_transport.ray_actor.ClientAppActor.run:
+================================================================================
+Checking Serializability of <function RayActorClientProxy.__init__.<locals>._load_app at 0x7eee34367e20>
+================================================================================
+[31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+Detected 1 global variables. Checking serializability...
+    Serializing 'ClientApp' <class 'flwr.clientapp.client_app.ClientApp'>...
+Detected 1 nonlocal variables. Checking serializability...
+    Serializing 'client_fn' <function client_fn at 0x7eed62a3df80>...
+    [31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+    Detected 5 global variables. Checking serializability...
+        Serializing 'get_net' <function get_net at 0x7eed62a3c680>...
+        Serializing 'DEVICE' cuda:0...
+        Serializing 'trainloaders' [<torch.utils.data.dataloader.DataLoader object at 0x7eed62a02120>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a021e0>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02360>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a024e0>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02660>]...
+        Serializing 'valloaders' [<torch.utils.data.dataloader.DataLoader object at 0x7eec9d817110>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02210>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02390>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02510>, <torch.utils.data.dataloader.DataLoader object at 0x7eed62a02690>]...
+        Serializing 'FlowerClient' <class '__main__.FlowerClient'>...
+        [31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+            Serializing '__init__' <function FlowerClient.__init__ at 0x7eed62a3e020>...
+            Serializing 'evaluate' <function FlowerClient.evaluate at 0x7eed62a3e2a0>...
+            Serializing 'fit' <function FlowerClient.fit at 0x7eed62a3e200>...
+            [31m!!! FAIL[39m serialization: cannot pickle 'CudnnModule' object
+            Serializing '_abc_impl' <_abc._abc_data object at 0x7eed62a47e40>...
+            [31m!!! FAIL[39m serialization: cannot pickle '_abc._abc_data' object
+================================================================================
+Variable: 
+
+	[1mFailTuple(_abc_impl [obj=<_abc._abc_data object at 0x7eed62a47e40>, parent=<class '__main__.FlowerClient'>])
+FailTuple(fit [obj=<function FlowerClient.fit at 0x7eed62a3e200>, parent=<class '__main__.FlowerClient'>])[0m
+
+was found to be non-serializable. There may be multiple other undetected variables that were non-serializable. 
+Consider either removing the instantiation/imports of these variables or moving the instantiation into the scope of the function/class. 
+================================================================================
+Check https://docs.ray.io/en/master/ray-core/objects/serialization.html#troubleshooting for more information.
+If you have any suggestions on how to improve this error message, please reach out to the Ray developers on github.com/ray-project/ray/issues/
+================================================================================
+
+[92mINFO [0m:      aggregate_fit: received 0 results and 5 failures
+
+--- Rodada 1 - Avaliação Centralizada (Servidor) ---
+Loss (Servidor): 2.3033 | Acurácia (Servidor): 0.1036
+[92mINFO [0m:      fit progress: (1, 2.3033205837249757, {'accuracy': 0.1036, 'loss': 2.3033205837249757}, 5.458239528001286)
+[92mINFO [0m:      configure_evaluate: strategy sampled 5 clients (out of 5)
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[92mINFO [0m:      aggregate_evaluate: received 0 results and 5 failures
+[92mINFO [0m:      
+[92mINFO [0m:      [ROUND 2]
+[92mINFO [0m:      configure_fit: strategy sampled 5 clients (out of 5)
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[92mINFO [0m:      aggregate_fit: received 0 results and 5 failures
+
+--- Rodada 2 - Avaliação Centralizada (Servidor) ---
+Loss (Servidor): 2.3033 | Acurácia (Servidor): 0.1036
+[92mINFO [0m:      fit progress: (2, 2.3033205837249757, {'accuracy': 0.1036, 'loss': 2.3033205837249757}, 6.550735472999804)
+[92mINFO [0m:      configure_evaluate: strategy sampled 5 clients (out of 5)
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[92mINFO [0m:      aggregate_evaluate: received 0 results and 5 failures
+[92mINFO [0m:      
+[92mINFO [0m:      [ROUND 3]
+[92mINFO [0m:      configure_fit: strategy sampled 5 clients (out of 5)
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[92mINFO [0m:      aggregate_fit: received 0 results and 5 failures
+
+--- Rodada 3 - Avaliação Centralizada (Servidor) ---
+Loss (Servidor): 2.3033 | Acurácia (Servidor): 0.1036
+[92mINFO [0m:      fit progress: (3, 2.3033205837249757, {'accuracy': 0.1036, 'loss': 2.3033205837249757}, 7.617135742002574)
+[92mINFO [0m:      configure_evaluate: strategy sampled 5 clients (out of 5)
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[92mINFO [0m:      aggregate_evaluate: received 0 results and 5 failures
+[92mINFO [0m:      
+[92mINFO [0m:      [ROUND 4]
+[92mINFO [0m:      configure_fit: strategy sampled 5 clients (out of 5)
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[92mINFO [0m:      aggregate_fit: received 0 results and 5 failures
+
+--- Rodada 4 - Avaliação Centralizada (Servidor) ---
+Loss (Servidor): 2.3033 | Acurácia (Servidor): 0.1036
+[92mINFO [0m:      fit progress: (4, 2.3033205837249757, {'accuracy': 0.1036, 'loss': 2.3033205837249757}, 8.683184600005916)
+[92mINFO [0m:      configure_evaluate: strategy sampled 5 clients (out of 5)
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[92mINFO [0m:      aggregate_evaluate: received 0 results and 5 failures
+[92mINFO [0m:      
+[92mINFO [0m:      [ROUND 5]
+[92mINFO [0m:      configure_fit: strategy sampled 5 clients (out of 5)
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[91mERROR [0m:     Traceback (most recent call last):
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_client_proxy.py", line 91, in _submit_job
+    out_mssg, updated_context = self.actor_pool.get_client_result(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 400, in get_client_result
+    return self._fetch_future_result(cid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/flwr/simulation/ray_transport/ray_actor.py", line 281, in _fetch_future_result
+    res_cid, out_mssg, updated_context = ray.get(
+                                         ^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/auto_init_hook.py", line 22, in auto_init_wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/client_mode_hook.py", line 107, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py", line 2975, in get
+    raise ValueError(
+ValueError: Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[91mERROR [0m:     Invalid type of object refs, <class 'NoneType'>, is given. 'object_refs' must either be an ObjectRef or a list of ObjectRefs. 
+[92mINFO [0m:      aggregate_fit: received 0 results and 5 failures
+
+===== 2026-09-30T06:55:42 full_fedhad__CIFAR10__alpha-0.01__seed-42 =====
+Treinando no dispositivo: cuda:0 com o dataset: CIFAR10 | Setup clientes: 5 (num_gpus por cliente=0.2) | SEED=42
+FLOPS por amostra (forward): 6.030e+07 | (forward+backward, 3x): 1.809e+08
+Files already downloaded and verified
+Files already downloaded and verified
+Dividindo o dataset usando a distribuição de Dirichlet com alpha=0.01.
+[r2] arm=full_fedhad | per-client plan=[{'tau': 1059, 'lr': 0.005646447672219065, 'n_batches': 353, 'E_full': 3, 'tau_original': 1059, 'donor': 0, 'perm_id': ''}, {'tau': 1828, 'lr': 0.005931491920536638, 'n_batches': 457, 'E_full': 4, 'tau_original': 1828, 'donor': 1, 'perm_id': ''}, {'tau': 753, 'lr': 0.004980346334590065, 'n_batches': 251, 'E_full': 3, 'tau_original': 753, 'donor': 2, 'perm_id': ''}, {'tau': 130, 'lr': 0.004001264399489184, 'n_batches': 65, 'E_full': 2, 'tau_original': 130, 'donor': 3, 'perm_id': ''}, {'tau': 834, 'lr': 0.00506082565355814, 'n_batches': 278, 'E_full': 3, 'tau_original': 834, 'donor': 4, 'perm_id': ''}]
+Iniciando a simulação de Aprendizado Federado...
+=== Diagnóstico de Medição de GPU ===
+  pynvml_disponivel: True
+  pynvml_versao: 580.178.04
+  gpus_detectadas: 1
+  leitura_potencia_ok: True
+  potencia_atual_W: 32.249
+[93mWARNING [0m:   DEPRECATED FEATURE: flwr.simulation.start_simulation() is deprecated.
+	Instead, use the `flwr run` CLI command to start a local simulation in your Flower app, as shown for example below:
+
+		$ flwr new  # Create a new Flower app from a template
+
+		$ flwr run  # Run the Flower app in Simulation Mode
+
+	Using `start_simulation()` is deprecated.
+
+            This is a deprecated feature. It will be removed
+            entirely in future versions of Flower.
+        
+[92mINFO [0m:      Starting Flower simulation, config: num_rounds=10, no round_timeout
+2026-09-30 06:55:50,800	INFO worker.py:2012 -- Started a local Ray instance.
+/home/tiago/GitHubProjects/fedhad-thesis-2/env_flwr_pt/lib/python3.12/site-packages/ray/_private/worker.py:2051: FutureWarning: Tip: In future versions of Ray, Ray will no longer override accelerator visible devices env var if num_gpus=0 or num_gpus=None (default). To enable this behavior and turn off this error message, set RAY_ACCEL_ENV_VAR_OVERRIDE_ON_ZERO=0
+  warnings.warn(
+[92mINFO [0m:      Flower VCE: Ray initialized with resources: {'node:__internal_head__': 1.0, 'CPU': 64.0, 'node:10.129.64.100': 1.0, 'memory': 182187378688.0, 'object_store_memory': 78080305152.0, 'GPU': 1.0, 'accelerator_type:A40': 1.0}
+[92mINFO [0m:      Optimize your simulation with Flower VCE: https://flower.ai/docs/framework/how-to-run-simulations.html
+/home/tiago/GitHubProjects/fedhad-thesis-2/reviewer_r2_controls/code/fedhad_r2.py:2050: UserWarning: No `num_cpus` specified in `client_resources`. Using `num_cpus=1` for each client.
+  history = fl.simulation.start_simulation(
+[92mINFO [0m:      Flower VCE: Resources for each Virtual Client: {'num_gpus': 0.2, 'num_cpus': 1}
+[92mINFO [0m:      Flower VCE: Creating VirtualClientEngineActorPool with 5 actors
+[92mINFO [0m:      [INIT]
+[92mINFO [0m:      Using initial global parameters provided by strategy
+[92mINFO [0m:      Starting evaluation of initial global parameters
+
+--- Rodada 0 - Avaliação Centralizada (Servidor) ---
+Loss (Servidor): 2.3033 | Acurácia (Servidor): 0.1036
+[92mINFO [0m:      initial parameters (loss, other metrics): 2.3033205837249757, {'accuracy': 0.1036, 'loss': 2.3033205837249757}
+[92mINFO [0m:      
+[92mINFO [0m:      [ROUND 1]
+[92mINFO [0m:      configure_fit: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=496486)[0m [93mWARNING [0m:   DEPRECATED FEATURE: `client_fn` now expects a signature `def client_fn(context: Context)`.The provided `client_fn` has signature: {'cid': <Parameter "cid: str">}. You can import the `Context` like this: `from flwr.app import Context`
+[36m(ClientAppActor pid=496486)[0m 
+[36m(ClientAppActor pid=496486)[0m             This is a deprecated feature. It will be removed
+[36m(ClientAppActor pid=496486)[0m             entirely in future versions of Flower.
+[36m(ClientAppActor pid=496486)[0m         
+[36m(ClientAppActor pid=496486)[0m Cliente 4: HetNorm=0.6506 | arm=full_fedhad | steps=834 (orig=834, donor=4) | LR=0.005061 | FedProx=True | seed=941419695
+[36m(ClientAppActor pid=496484)[0m 
+[36m(ClientAppActor pid=496484)[0m         
+[36m(ClientAppActor pid=496485)[0m 
+[36m(ClientAppActor pid=496485)[0m         
+[36m(ClientAppActor pid=496483)[0m 
+[36m(ClientAppActor pid=496483)[0m         
+[36m(ClientAppActor pid=496482)[0m 
+[36m(ClientAppActor pid=496482)[0m         
+[92mINFO [0m:      aggregate_fit: received 5 results and 0 failures
+
+--- Rodada 1 - Avaliação Centralizada (Servidor) ---
+Loss (Servidor): 2.2123 | Acurácia (Servidor): 0.1738
+[92mINFO [0m:      fit progress: (1, 2.2122520709991456, {'accuracy': 0.1738, 'loss': 2.2122520709991456}, 18.859313360997476)
+[92mINFO [0m:      configure_evaluate: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=496483)[0m 
+[36m(ClientAppActor pid=496483)[0m         
+[36m(ClientAppActor pid=496483)[0m [93mWARNING [0m:   DEPRECATED FEATURE: `client_fn` now expects a signature `def client_fn(context: Context)`.The provided `client_fn` has signature: {'cid': <Parameter "cid: str">}. You can import the `Context` like this: `from flwr.app import Context`[32m [repeated 5x across cluster] (Ray deduplicates logs by default. Set RAY_DEDUP_LOGS=0 to disable log deduplication, or see https://docs.ray.io/en/master/ray-observability/user-guides/configure-logging.html#log-deduplication for more options.)[0m
+[36m(ClientAppActor pid=496483)[0m             This is a deprecated feature. It will be removed[32m [repeated 5x across cluster][0m
+[36m(ClientAppActor pid=496483)[0m             entirely in future versions of Flower.[32m [repeated 5x across cluster][0m
+[36m(ClientAppActor pid=496485)[0m 
+[36m(ClientAppActor pid=496485)[0m         
+[36m(ClientAppActor pid=496486)[0m 
+[36m(ClientAppActor pid=496486)[0m         
+[36m(ClientAppActor pid=496484)[0m 
+[36m(ClientAppActor pid=496484)[0m         
+[36m(ClientAppActor pid=496482)[0m 
+[36m(ClientAppActor pid=496482)[0m         
+[92mINFO [0m:      aggregate_evaluate: received 5 results and 0 failures
+--- Avaliação Agregada (Clientes) ---
+Loss Média (Clientes): 2.2167 | Acurácia Média (Clientes): 0.1828
+[92mINFO [0m:      
+[92mINFO [0m:      [ROUND 2]
+[92mINFO [0m:      configure_fit: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=496482)[0m Cliente 4: HetNorm=0.6506 | arm=full_fedhad | steps=834 (orig=834, donor=4) | LR=0.005061 | FedProx=True | seed=882967609[32m [repeated 5x across cluster][0m
+[36m(ClientAppActor pid=496482)[0m 
+[36m(ClientAppActor pid=496482)[0m         
+[36m(ClientAppActor pid=496484)[0m 
+[36m(ClientAppActor pid=496484)[0m         
+[36m(ClientAppActor pid=496486)[0m 
+[36m(ClientAppActor pid=496486)[0m         
+[36m(ClientAppActor pid=496485)[0m 
+[36m(ClientAppActor pid=496485)[0m         
+[36m(ClientAppActor pid=496483)[0m 
+[36m(ClientAppActor pid=496483)[0m         
+[92mINFO [0m:      aggregate_fit: received 5 results and 0 failures
+
+--- Rodada 2 - Avaliação Centralizada (Servidor) ---
+Loss (Servidor): 1.8747 | Acurácia (Servidor): 0.4076
+[92mINFO [0m:      fit progress: (2, 1.8747077571868898, {'accuracy': 0.4076, 'loss': 1.8747077571868898}, 36.03447166099795)
+[92mINFO [0m:      configure_evaluate: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=496484)[0m 
+[36m(ClientAppActor pid=496484)[0m         
+[36m(ClientAppActor pid=496484)[0m [93mWARNING [0m:   DEPRECATED FEATURE: `client_fn` now expects a signature `def client_fn(context: Context)`.The provided `client_fn` has signature: {'cid': <Parameter "cid: str">}. You can import the `Context` like this: `from flwr.app import Context`[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=496484)[0m             This is a deprecated feature. It will be removed[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=496484)[0m             entirely in future versions of Flower.[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=496485)[0m 
+[36m(ClientAppActor pid=496485)[0m         
+[36m(ClientAppActor pid=496482)[0m 
+[36m(ClientAppActor pid=496482)[0m         
+[36m(ClientAppActor pid=496486)[0m 
+[36m(ClientAppActor pid=496486)[0m         
+[36m(ClientAppActor pid=496483)[0m 
+[36m(ClientAppActor pid=496483)[0m         
+[92mINFO [0m:      aggregate_evaluate: received 5 results and 0 failures
+--- Avaliação Agregada (Clientes) ---
+Loss Média (Clientes): 1.8828 | Acurácia Média (Clientes): 0.4171
+[92mINFO [0m:      
+[92mINFO [0m:      [ROUND 3]
+[92mINFO [0m:      configure_fit: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=496483)[0m Cliente 3: HetNorm=0.9995 | arm=full_fedhad | steps=130 (orig=130, donor=3) | LR=0.004001 | FedProx=True | seed=13947583[32m [repeated 5x across cluster][0m
+[36m(ClientAppActor pid=496483)[0m 
+[36m(ClientAppActor pid=496483)[0m         
+[36m(ClientAppActor pid=496482)[0m 
+[36m(ClientAppActor pid=496482)[0m         
+[36m(ClientAppActor pid=496486)[0m 
+[36m(ClientAppActor pid=496486)[0m         
+[36m(ClientAppActor pid=496485)[0m 
+[36m(ClientAppActor pid=496485)[0m         
+[36m(ClientAppActor pid=496484)[0m 
+[36m(ClientAppActor pid=496484)[0m         
+[92mINFO [0m:      aggregate_fit: received 5 results and 0 failures
+
+--- Rodada 3 - Avaliação Centralizada (Servidor) ---
+Loss (Servidor): 1.5866 | Acurácia (Servidor): 0.4802
+[92mINFO [0m:      fit progress: (3, 1.5866244634628295, {'accuracy': 0.4802, 'loss': 1.5866244634628295}, 53.250236968000536)
+[92mINFO [0m:      configure_evaluate: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=496486)[0m 
+[36m(ClientAppActor pid=496486)[0m         
+[36m(ClientAppActor pid=496486)[0m [93mWARNING [0m:   DEPRECATED FEATURE: `client_fn` now expects a signature `def client_fn(context: Context)`.The provided `client_fn` has signature: {'cid': <Parameter "cid: str">}. You can import the `Context` like this: `from flwr.app import Context`[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=496486)[0m             This is a deprecated feature. It will be removed[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=496486)[0m             entirely in future versions of Flower.[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=496484)[0m 
+[36m(ClientAppActor pid=496484)[0m         
+[36m(ClientAppActor pid=496485)[0m 
+[36m(ClientAppActor pid=496485)[0m         
+[36m(ClientAppActor pid=496482)[0m 
+[36m(ClientAppActor pid=496482)[0m         
+[36m(ClientAppActor pid=496483)[0m 
+[36m(ClientAppActor pid=496483)[0m         
+[92mINFO [0m:      aggregate_evaluate: received 5 results and 0 failures
+--- Avaliação Agregada (Clientes) ---
+Loss Média (Clientes): 1.5838 | Acurácia Média (Clientes): 0.4851
+[92mINFO [0m:      
+[92mINFO [0m:      [ROUND 4]
+[92mINFO [0m:      configure_fit: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=496482)[0m Cliente 4: HetNorm=0.6506 | arm=full_fedhad | steps=834 (orig=834, donor=4) | LR=0.005061 | FedProx=True | seed=313387785[32m [repeated 5x across cluster][0m
+[36m(ClientAppActor pid=496482)[0m 
+[36m(ClientAppActor pid=496482)[0m         
+[36m(ClientAppActor pid=496483)[0m 
+[36m(ClientAppActor pid=496483)[0m         
+[36m(ClientAppActor pid=496485)[0m 
+[36m(ClientAppActor pid=496485)[0m         
+[36m(ClientAppActor pid=496484)[0m 
+[36m(ClientAppActor pid=496484)[0m         
+[36m(ClientAppActor pid=496486)[0m 
+[36m(ClientAppActor pid=496486)[0m         
+[92mINFO [0m:      aggregate_fit: received 5 results and 0 failures
+
+--- Rodada 4 - Avaliação Centralizada (Servidor) ---
+Loss (Servidor): 1.3945 | Acurácia (Servidor): 0.5512
+[92mINFO [0m:      fit progress: (4, 1.394467886543274, {'accuracy': 0.5512, 'loss': 1.394467886543274}, 70.11421605400392)
+[92mINFO [0m:      configure_evaluate: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=496483)[0m 
+[36m(ClientAppActor pid=496483)[0m         
+[36m(ClientAppActor pid=496483)[0m [93mWARNING [0m:   DEPRECATED FEATURE: `client_fn` now expects a signature `def client_fn(context: Context)`.The provided `client_fn` has signature: {'cid': <Parameter "cid: str">}. You can import the `Context` like this: `from flwr.app import Context`[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=496483)[0m             This is a deprecated feature. It will be removed[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=496483)[0m             entirely in future versions of Flower.[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=496484)[0m 
+[36m(ClientAppActor pid=496484)[0m         
+[36m(ClientAppActor pid=496482)[0m 
+[36m(ClientAppActor pid=496482)[0m         
+[36m(ClientAppActor pid=496485)[0m 
+[36m(ClientAppActor pid=496485)[0m         
+[36m(ClientAppActor pid=496486)[0m 
+[36m(ClientAppActor pid=496486)[0m         
+[92mINFO [0m:      aggregate_evaluate: received 5 results and 0 failures
+--- Avaliação Agregada (Clientes) ---
+Loss Média (Clientes): 1.3856 | Acurácia Média (Clientes): 0.5537
+[92mINFO [0m:      
+[92mINFO [0m:      [ROUND 5]
+[92mINFO [0m:      configure_fit: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=496486)[0m Cliente 0: HetNorm=0.5140 | arm=full_fedhad | steps=1059 (orig=1059, donor=0) | LR=0.005646 | FedProx=True | seed=459862737[32m [repeated 5x across cluster][0m
+[36m(ClientAppActor pid=496486)[0m 
+[36m(ClientAppActor pid=496486)[0m         
+[36m(ClientAppActor pid=496485)[0m 
+[36m(ClientAppActor pid=496485)[0m         
+[36m(ClientAppActor pid=496482)[0m 
+[36m(ClientAppActor pid=496482)[0m         
+[36m(ClientAppActor pid=496484)[0m 
+[36m(ClientAppActor pid=496484)[0m         
+[36m(ClientAppActor pid=496483)[0m 
+[36m(ClientAppActor pid=496483)[0m         
+[92mINFO [0m:      aggregate_fit: received 5 results and 0 failures
+
+--- Rodada 5 - Avaliação Centralizada (Servidor) ---
+Loss (Servidor): 1.2647 | Acurácia (Servidor): 0.5833
+[92mINFO [0m:      fit progress: (5, 1.2647416757583618, {'accuracy': 0.5833, 'loss': 1.2647416757583618}, 87.38789789500152)
+[92mINFO [0m:      configure_evaluate: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=496485)[0m 
+[36m(ClientAppActor pid=496485)[0m         
+[36m(ClientAppActor pid=496485)[0m [93mWARNING [0m:   DEPRECATED FEATURE: `client_fn` now expects a signature `def client_fn(context: Context)`.The provided `client_fn` has signature: {'cid': <Parameter "cid: str">}. You can import the `Context` like this: `from flwr.app import Context`[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=496485)[0m             This is a deprecated feature. It will be removed[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=496485)[0m             entirely in future versions of Flower.[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=496486)[0m 
+[36m(ClientAppActor pid=496486)[0m         
+[36m(ClientAppActor pid=496482)[0m 
+[36m(ClientAppActor pid=496482)[0m         
+[36m(ClientAppActor pid=496483)[0m 
+[36m(ClientAppActor pid=496483)[0m         
+[36m(ClientAppActor pid=496484)[0m 
+[36m(ClientAppActor pid=496484)[0m         
+[92mINFO [0m:      aggregate_evaluate: received 5 results and 0 failures
+--- Avaliação Agregada (Clientes) ---
+Loss Média (Clientes): 1.2560 | Acurácia Média (Clientes): 0.5885
+[92mINFO [0m:      
+[92mINFO [0m:      [ROUND 6]
+[92mINFO [0m:      configure_fit: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=496484)[0m 
+[36m(ClientAppActor pid=496484)[0m         
+[36m(ClientAppActor pid=496484)[0m Cliente 3: HetNorm=0.9995 | arm=full_fedhad | steps=130 (orig=130, donor=3) | LR=0.004001 | FedProx=True | seed=1046710359[32m [repeated 5x across cluster][0m
+[36m(ClientAppActor pid=496483)[0m 
+[36m(ClientAppActor pid=496483)[0m         
+[36m(ClientAppActor pid=496482)[0m 
+[36m(ClientAppActor pid=496482)[0m         
+[36m(ClientAppActor pid=496486)[0m 
+[36m(ClientAppActor pid=496486)[0m         
+[36m(ClientAppActor pid=496485)[0m 
+[36m(ClientAppActor pid=496485)[0m         
+[92mINFO [0m:      aggregate_fit: received 5 results and 0 failures
+
+--- Rodada 6 - Avaliação Centralizada (Servidor) ---
+Loss (Servidor): 1.1711 | Acurácia (Servidor): 0.5890
+[92mINFO [0m:      fit progress: (6, 1.1710993366241456, {'accuracy': 0.589, 'loss': 1.1710993366241456}, 104.64305943300133)
+[92mINFO [0m:      configure_evaluate: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=496486)[0m 
+[36m(ClientAppActor pid=496486)[0m         
+[36m(ClientAppActor pid=496486)[0m [93mWARNING [0m:   DEPRECATED FEATURE: `client_fn` now expects a signature `def client_fn(context: Context)`.The provided `client_fn` has signature: {'cid': <Parameter "cid: str">}. You can import the `Context` like this: `from flwr.app import Context`[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=496486)[0m             This is a deprecated feature. It will be removed[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=496486)[0m             entirely in future versions of Flower.[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=496485)[0m 
+[36m(ClientAppActor pid=496485)[0m         
+[36m(ClientAppActor pid=496483)[0m 
+[36m(ClientAppActor pid=496483)[0m         
+[36m(ClientAppActor pid=496482)[0m 
+[36m(ClientAppActor pid=496482)[0m         
+[36m(ClientAppActor pid=496484)[0m 
+[36m(ClientAppActor pid=496484)[0m         
+[92mINFO [0m:      aggregate_evaluate: received 5 results and 0 failures
+--- Avaliação Agregada (Clientes) ---
+Loss Média (Clientes): 1.1670 | Acurácia Média (Clientes): 0.5883
+[92mINFO [0m:      
+[92mINFO [0m:      [ROUND 7]
+[92mINFO [0m:      configure_fit: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=496484)[0m Cliente 4: HetNorm=0.6506 | arm=full_fedhad | steps=834 (orig=834, donor=4) | LR=0.005061 | FedProx=True | seed=1161487615[32m [repeated 5x across cluster][0m
+[36m(ClientAppActor pid=496484)[0m 
+[36m(ClientAppActor pid=496484)[0m         
+[36m(ClientAppActor pid=496482)[0m 
+[36m(ClientAppActor pid=496482)[0m         
+[36m(ClientAppActor pid=496485)[0m 
+[36m(ClientAppActor pid=496485)[0m         
+[36m(ClientAppActor pid=496483)[0m 
+[36m(ClientAppActor pid=496483)[0m         
+[36m(ClientAppActor pid=496486)[0m 
+[36m(ClientAppActor pid=496486)[0m         
+[92mINFO [0m:      aggregate_fit: received 5 results and 0 failures
+
+--- Rodada 7 - Avaliação Centralizada (Servidor) ---
+Loss (Servidor): 1.1448 | Acurácia (Servidor): 0.6116
+[92mINFO [0m:      fit progress: (7, 1.1447970037460327, {'accuracy': 0.6116, 'loss': 1.1447970037460327}, 121.81197651699767)
+[92mINFO [0m:      configure_evaluate: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=496485)[0m 
+[36m(ClientAppActor pid=496485)[0m         
+[36m(ClientAppActor pid=496485)[0m [93mWARNING [0m:   DEPRECATED FEATURE: `client_fn` now expects a signature `def client_fn(context: Context)`.The provided `client_fn` has signature: {'cid': <Parameter "cid: str">}. You can import the `Context` like this: `from flwr.app import Context`[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=496485)[0m             This is a deprecated feature. It will be removed[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=496485)[0m             entirely in future versions of Flower.[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=496483)[0m 
+[36m(ClientAppActor pid=496483)[0m         
+[36m(ClientAppActor pid=496484)[0m 
+[36m(ClientAppActor pid=496484)[0m         
+[36m(ClientAppActor pid=496486)[0m 
+[36m(ClientAppActor pid=496486)[0m         
+[36m(ClientAppActor pid=496482)[0m 
+[36m(ClientAppActor pid=496482)[0m         
+[92mINFO [0m:      aggregate_evaluate: received 5 results and 0 failures
+--- Avaliação Agregada (Clientes) ---
+Loss Média (Clientes): 1.1380 | Acurácia Média (Clientes): 0.6249
+[92mINFO [0m:      
+[92mINFO [0m:      [ROUND 8]
+[92mINFO [0m:      configure_fit: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=496482)[0m Cliente 1: HetNorm=0.4573 | arm=full_fedhad | steps=1828 (orig=1828, donor=1) | LR=0.005931 | FedProx=True | seed=282610003[32m [repeated 5x across cluster][0m
+[36m(ClientAppActor pid=496482)[0m 
+[36m(ClientAppActor pid=496482)[0m         
+[36m(ClientAppActor pid=496486)[0m 
+[36m(ClientAppActor pid=496486)[0m         
+[36m(ClientAppActor pid=496484)[0m 
+[36m(ClientAppActor pid=496484)[0m         
+[36m(ClientAppActor pid=496483)[0m 
+[36m(ClientAppActor pid=496483)[0m         
+[36m(ClientAppActor pid=496485)[0m 
+[36m(ClientAppActor pid=496485)[0m         
+[92mINFO [0m:      aggregate_fit: received 5 results and 0 failures
+
+--- Rodada 8 - Avaliação Centralizada (Servidor) ---
+Loss (Servidor): 1.1231 | Acurácia (Servidor): 0.6133
+[92mINFO [0m:      fit progress: (8, 1.1231069440841674, {'accuracy': 0.6133, 'loss': 1.1231069440841674}, 138.74348918000032)
+[92mINFO [0m:      configure_evaluate: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=496482)[0m 
+[36m(ClientAppActor pid=496482)[0m         
+[36m(ClientAppActor pid=496482)[0m [93mWARNING [0m:   DEPRECATED FEATURE: `client_fn` now expects a signature `def client_fn(context: Context)`.The provided `client_fn` has signature: {'cid': <Parameter "cid: str">}. You can import the `Context` like this: `from flwr.app import Context`[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=496482)[0m             This is a deprecated feature. It will be removed[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=496482)[0m             entirely in future versions of Flower.[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=496485)[0m 
+[36m(ClientAppActor pid=496485)[0m         
+[36m(ClientAppActor pid=496486)[0m 
+[36m(ClientAppActor pid=496486)[0m         
+[36m(ClientAppActor pid=496484)[0m 
+[36m(ClientAppActor pid=496484)[0m         
+[36m(ClientAppActor pid=496483)[0m 
+[36m(ClientAppActor pid=496483)[0m         
+[92mINFO [0m:      aggregate_evaluate: received 5 results and 0 failures
+--- Avaliação Agregada (Clientes) ---
+Loss Média (Clientes): 1.1138 | Acurácia Média (Clientes): 0.6247
+[92mINFO [0m:      
+[92mINFO [0m:      [ROUND 9]
+[92mINFO [0m:      configure_fit: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=496483)[0m Cliente 4: HetNorm=0.6506 | arm=full_fedhad | steps=834 (orig=834, donor=4) | LR=0.005061 | FedProx=True | seed=1045230413[32m [repeated 5x across cluster][0m
+[36m(ClientAppActor pid=496483)[0m 
+[36m(ClientAppActor pid=496483)[0m         
+[36m(ClientAppActor pid=496484)[0m 
+[36m(ClientAppActor pid=496484)[0m         
+[36m(ClientAppActor pid=496486)[0m 
+[36m(ClientAppActor pid=496486)[0m         
+[36m(ClientAppActor pid=496485)[0m 
+[36m(ClientAppActor pid=496485)[0m         
+[36m(ClientAppActor pid=496482)[0m 
+[36m(ClientAppActor pid=496482)[0m         
+[92mINFO [0m:      aggregate_fit: received 5 results and 0 failures
+
+--- Rodada 9 - Avaliação Centralizada (Servidor) ---
+Loss (Servidor): 1.0800 | Acurácia (Servidor): 0.6256
+[92mINFO [0m:      fit progress: (9, 1.0800373586654664, {'accuracy': 0.6256, 'loss': 1.0800373586654664}, 156.46433065900055)
+[92mINFO [0m:      configure_evaluate: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=496482)[0m 
+[36m(ClientAppActor pid=496482)[0m         
+[36m(ClientAppActor pid=496482)[0m [93mWARNING [0m:   DEPRECATED FEATURE: `client_fn` now expects a signature `def client_fn(context: Context)`.The provided `client_fn` has signature: {'cid': <Parameter "cid: str">}. You can import the `Context` like this: `from flwr.app import Context`[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=496482)[0m             This is a deprecated feature. It will be removed[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=496482)[0m             entirely in future versions of Flower.[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=496484)[0m 
+[36m(ClientAppActor pid=496484)[0m         
+[36m(ClientAppActor pid=496483)[0m 
+[36m(ClientAppActor pid=496483)[0m         
+[36m(ClientAppActor pid=496486)[0m 
+[36m(ClientAppActor pid=496486)[0m         
+[36m(ClientAppActor pid=496485)[0m 
+[36m(ClientAppActor pid=496485)[0m         
+[92mINFO [0m:      aggregate_evaluate: received 5 results and 0 failures
+--- Avaliação Agregada (Clientes) ---
+Loss Média (Clientes): 1.0670 | Acurácia Média (Clientes): 0.6371
+[92mINFO [0m:      
+[92mINFO [0m:      [ROUND 10]
+[92mINFO [0m:      configure_fit: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=496485)[0m 
+[36m(ClientAppActor pid=496485)[0m         
+[36m(ClientAppActor pid=496485)[0m Cliente 3: HetNorm=0.9995 | arm=full_fedhad | steps=130 (orig=130, donor=3) | LR=0.004001 | FedProx=True | seed=957652822[32m [repeated 5x across cluster][0m
+[36m(ClientAppActor pid=496486)[0m 
+[36m(ClientAppActor pid=496486)[0m         
+[36m(ClientAppActor pid=496483)[0m 
+[36m(ClientAppActor pid=496483)[0m         
+[36m(ClientAppActor pid=496484)[0m 
+[36m(ClientAppActor pid=496484)[0m         
+[36m(ClientAppActor pid=496482)[0m 
+[36m(ClientAppActor pid=496482)[0m         
+[92mINFO [0m:      aggregate_fit: received 5 results and 0 failures
+
+--- Rodada 10 - Avaliação Centralizada (Servidor) ---
+Loss (Servidor): 1.0632 | Acurácia (Servidor): 0.6358
+[92mINFO [0m:      fit progress: (10, 1.0631769379615783, {'accuracy': 0.6358, 'loss': 1.0631769379615783}, 173.86151485900336)
+[92mINFO [0m:      configure_evaluate: strategy sampled 5 clients (out of 5)
+[36m(ClientAppActor pid=496484)[0m 
+[36m(ClientAppActor pid=496484)[0m         
+[36m(ClientAppActor pid=496484)[0m [93mWARNING [0m:   DEPRECATED FEATURE: `client_fn` now expects a signature `def client_fn(context: Context)`.The provided `client_fn` has signature: {'cid': <Parameter "cid: str">}. You can import the `Context` like this: `from flwr.app import Context`[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=496484)[0m             This is a deprecated feature. It will be removed[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=496484)[0m             entirely in future versions of Flower.[32m [repeated 10x across cluster][0m
+[36m(ClientAppActor pid=496486)[0m 
+[36m(ClientAppActor pid=496486)[0m         
+[36m(ClientAppActor pid=496482)[0m 
+[36m(ClientAppActor pid=496482)[0m         
+[36m(ClientAppActor pid=496483)[0m 
+[36m(ClientAppActor pid=496483)[0m         
+[36m(ClientAppActor pid=496485)[0m 
+[36m(ClientAppActor pid=496485)[0m         
+[92mINFO [0m:      aggregate_evaluate: received 5 results and 0 failures
+--- Avaliação Agregada (Clientes) ---
+Loss Média (Clientes): 1.0503 | Acurácia Média (Clientes): 0.6385
+[92mINFO [0m:      
+[92mINFO [0m:      [SUMMARY]
+[92mINFO [0m:      Run finished 10 round(s) in 174.71s
+[92mINFO [0m:      	History (loss, distributed):
+[92mINFO [0m:      		round 1: 2.2167393752493174
+[92mINFO [0m:      		round 2: 1.8828457325404824
+[92mINFO [0m:      		round 3: 1.5837683373390377
+[92mINFO [0m:      		round 4: 1.3855816778075005
+[92mINFO [0m:      		round 5: 1.2559791038121717
+[92mINFO [0m:      		round 6: 1.167041602075565
+[92mINFO [0m:      		round 7: 1.1380441331057387
+[92mINFO [0m:      		round 8: 1.1137637381292291
+[92mINFO [0m:      		round 9: 1.0670398535979322
+[92mINFO [0m:      		round 10: 1.0503244369262266
+[92mINFO [0m:      	History (loss, centralized):
+[92mINFO [0m:      		round 0: 2.3033205837249757
+[92mINFO [0m:      		round 1: 2.2122520709991456
+[92mINFO [0m:      		round 2: 1.8747077571868898
+[92mINFO [0m:      		round 3: 1.5866244634628295
+[92mINFO [0m:      		round 4: 1.394467886543274
+[92mINFO [0m:      		round 5: 1.2647416757583618
+[92mINFO [0m:      		round 6: 1.1710993366241456
+[92mINFO [0m:      		round 7: 1.1447970037460327
+[92mINFO [0m:      		round 8: 1.1231069440841674
+[92mINFO [0m:      		round 9: 1.0800373586654664
+[92mINFO [0m:      		round 10: 1.0631769379615783
+[92mINFO [0m:      	History (metrics, distributed, fit):
+[92mINFO [0m:      	{'avg_epochs_weighted': [(1, 3.278149374458345),
+[92mINFO [0m:      	                         (2, 3.278149374458345),
+[92mINFO [0m:      	                         (3, 3.278149374458345),
+[92mINFO [0m:      	                         (4, 3.278149374458345),
+[92mINFO [0m:      	                         (5, 3.278149374458345),
+[92mINFO [0m:      	                         (6, 3.278149374458345),
+[92mINFO [0m:      	                         (7, 3.278149374458345),
+[92mINFO [0m:      	                         (8, 3.278149374458345),
+[92mINFO [0m:      	                         (9, 3.278149374458345),
+[92mINFO [0m:      	                         (10, 3.278149374458345)],
+[92mINFO [0m:      	 'avg_flops_per_client_round': [(1, 5337117818880.0),
+[92mINFO [0m:      	                                (2, 5337117818880.0),
+[92mINFO [0m:      	                                (3, 5337117818880.0),
+[92mINFO [0m:      	                                (4, 5337117818880.0),
+[92mINFO [0m:      	                                (5, 5337117818880.0),
+[92mINFO [0m:      	                                (6, 5337117818880.0),
+[92mINFO [0m:      	                                (7, 5337117818880.0),
+[92mINFO [0m:      	                                (8, 5337117818880.0),
+[92mINFO [0m:      	                                (9, 5337117818880.0),
+[92mINFO [0m:      	                                (10, 5337117818880.0)],
+[92mINFO [0m:      	 'avg_lr_weighted': [(1, 0.005426840599967675),
+[92mINFO [0m:      	                     (2, 0.005426840599967675),
+[92mINFO [0m:      	                     (3, 0.005426840599967675),
+[92mINFO [0m:      	                     (4, 0.005426840599967675),
+[92mINFO [0m:      	                     (5, 0.005426840599967675),
+[92mINFO [0m:      	                     (6, 0.005426840599967675),
+[92mINFO [0m:      	                     (7, 0.005426840599967675),
+[92mINFO [0m:      	                     (8, 0.005426840599967675),
+[92mINFO [0m:      	                     (9, 0.005426840599967675),
+[92mINFO [0m:      	                     (10, 0.005426840599967675)],
+[92mINFO [0m:      	 'total_flops_round': [(1, 26685589094400),
+[92mINFO [0m:      	                       (2, 26685589094400),
+[92mINFO [0m:      	                       (3, 26685589094400),
+[92mINFO [0m:      	                       (4, 26685589094400),
+[92mINFO [0m:      	                       (5, 26685589094400),
+[92mINFO [0m:      	                       (6, 26685589094400),
+[92mINFO [0m:      	                       (7, 26685589094400),
+[92mINFO [0m:      	                       (8, 26685589094400),
+[92mINFO [0m:      	                       (9, 26685589094400),
+[92mINFO [0m:      	                       (10, 26685589094400)]}
+[92mINFO [0m:      	History (metrics, distributed, evaluate):
+[92mINFO [0m:      	{'accuracy': [(1, 0.1828365673134627),
+[92mINFO [0m:      	              (2, 0.41708341668333665),
+[92mINFO [0m:      	              (3, 0.4850970194038808),
+[92mINFO [0m:      	              (4, 0.5537107421484296),
+[92mINFO [0m:      	              (5, 0.5885177035407081),
+[92mINFO [0m:      	              (6, 0.5883176635327065),
+[92mINFO [0m:      	              (7, 0.6249249849969994),
+[92mINFO [0m:      	              (8, 0.6247249449889978),
+[92mINFO [0m:      	              (9, 0.637127425485097),
+[92mINFO [0m:      	              (10, 0.6385277055411083)],
+[92mINFO [0m:      	 'loss': [(1, 2.2167393752493174),
+[92mINFO [0m:      	          (2, 1.8828457325404824),
+[92mINFO [0m:      	          (3, 1.5837683373390377),
+[92mINFO [0m:      	          (4, 1.3855816778075005),
+[92mINFO [0m:      	          (5, 1.2559791038121717),
+[92mINFO [0m:      	          (6, 1.167041602075565),
+[92mINFO [0m:      	          (7, 1.1380441331057387),
+[92mINFO [0m:      	          (8, 1.1137637381292291),
+[92mINFO [0m:      	          (9, 1.0670398535979322),
+[92mINFO [0m:      	          (10, 1.0503244369262266)]}
+[92mINFO [0m:      	History (metrics, centralized):
+[92mINFO [0m:      	{'accuracy': [(0, 0.1036),
+[92mINFO [0m:      	              (1, 0.1738),
+[92mINFO [0m:      	              (2, 0.4076),
+[92mINFO [0m:      	              (3, 0.4802),
+[92mINFO [0m:      	              (4, 0.5512),
+[92mINFO [0m:      	              (5, 0.5833),
+[92mINFO [0m:      	              (6, 0.589),
+[92mINFO [0m:      	              (7, 0.6116),
+[92mINFO [0m:      	              (8, 0.6133),
+[92mINFO [0m:      	              (9, 0.6256),
+[92mINFO [0m:      	              (10, 0.6358)],
+[92mINFO [0m:      	 'loss': [(0, 2.3033205837249757),
+[92mINFO [0m:      	          (1, 2.2122520709991456),
+[92mINFO [0m:      	          (2, 1.8747077571868898),
+[92mINFO [0m:      	          (3, 1.5866244634628295),
+[92mINFO [0m:      	          (4, 1.394467886543274),
+[92mINFO [0m:      	          (5, 1.2647416757583618),
+[92mINFO [0m:      	          (6, 1.1710993366241456),
+[92mINFO [0m:      	          (7, 1.1447970037460327),
+[92mINFO [0m:      	          (8, 1.1231069440841674),
+[92mINFO [0m:      	          (9, 1.0800373586654664),
+[92mINFO [0m:      	          (10, 1.0631769379615783)]}
+[92mINFO [0m:      
+[r2] artifacts written to /home/tiago/GitHubProjects/fedhad-thesis-2/results_reviewer_r2_step_permutation/raw/full_fedhad__CIFAR10__alpha-0.01__seed-42
+
+Resultados salvos em: /home/tiago/GitHubProjects/fedhad-thesis-2/results_reviewer_r2_step_permutation/raw/full_fedhad__CIFAR10__alpha-0.01__seed-42/report/r2/CIFAR10-Standard/FedHAD__CIFAR10__Mode-STANDARD__Cfg-E1L1F1__Setup-5__Clients-5__Rounds-10__Delay-0_05__Alpha-0_01__Seed-42.txt
+[36m(ClientAppActor pid=496482)[0m Cliente 4: HetNorm=0.6506 | arm=full_fedhad | steps=834 (orig=834, donor=4) | LR=0.005061 | FedProx=True | seed=645653303[32m [repeated 4x across cluster][0m
+[36m(ClientAppActor pid=496485)[0m [93mWARNING [0m:   DEPRECATED FEATURE: `client_fn` now expects a signature `def client_fn(context: Context)`.The provided `client_fn` has signature: {'cid': <Parameter "cid: str">}. You can import the `Context` like this: `from flwr.app import Context`[32m [repeated 4x across cluster][0m
+[36m(ClientAppActor pid=496485)[0m             This is a deprecated feature. It will be removed[32m [repeated 4x across cluster][0m
+[36m(ClientAppActor pid=496485)[0m             entirely in future versions of Flower.[32m [repeated 4x across cluster][0m

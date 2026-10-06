@@ -1,0 +1,136 @@
+==============================================================================
+PRIOR-ASSUMPTION ANALYSIS (offline; no training is executed)
+==============================================================================
+Sources read (read-only):
+  partition_manifest.csv  (33900, 25)
+  femnist_heldout_manifest.csv  (3000, 12)
+  drift_telemetry.csv  (6000, 14)
+
+------------------------------------------------------------------------------
+PART 1 - Dirichlet / CIFAR-10
+------------------------------------------------------------------------------
+Join (dataset, alpha, seed, client_id): 150/150 = 100.0%
+Regenerating exact training-split counts for 10 seeds x 3 alphas (partitioning only, no training)...
+Metric basis: regenerated 90% training split (matches the telemetry)
+Validation guard  : max |recomputed CV - logged H_k| = 7.379e-08 over 150 clients -> PASS at 1e-6
+  informative cases : 147/150 (3 M2 clients compare sentinel 0.0 to 0.0 and are not evidence)
+  max / median error: 7.379e-08 / 1.139e-08
+  relative error max/median: 9.733e-08 / 2.725e-08
+  float32 machine epsilon  : 1.192e-07  -> the largest relative error is 0.82x eps32, and 0/147 cases exceed 2x eps32
+  => the residual is float32 representation error in the logged value (the campaign computes the counts via torch.bincount(...).float()), not a reconstruction error
+  H_k constant across the 10 rounds and 4 methods: max within-client span = 0.000e+00 over 150 clients, so this guard covers all 6000 telemetry rows
+Basis cross-check : max |CV(train split) - CV(full partition)| = 5.245e-03; Spearman between bases = 0.999846 (excluding the 3 M2 clients, whose single sample falls entirely into the validation split, giving CV=1 on one basis and the sentinel 0 on the other)
+CIFAR-10 empirical global prior: counts per class = [5000], max deviation from uniform = 0.00e+00  (UNIFORM by construction)
+  (the 90% training split deviates by 9.73e-04, which is subsampling noise, not prior skew)
+Correlating vs cos_sim (2000 bootstrap resamples over seeds)...
+  observations: 6000 -> 5880 after excluding the 3 M2 (n_k=0) client-seed pairs
+
+Spearman rho vs cosine similarity - BASELINES (H_k does not steer training):
+  FedAvg
+     alpha        cv_norm    entropy_het      js_global      tv_global     js_uniform
+       1.0         -0.445         -0.447         -0.418         -0.394         -0.418
+       0.1         -0.908         -0.868         -0.793         -0.783         -0.793
+      0.01         -0.961         -0.963         -0.958         -0.939         -0.958
+  FedAvgM
+     alpha        cv_norm    entropy_het      js_global      tv_global     js_uniform
+       1.0         -0.469         -0.469         -0.438         -0.416         -0.438
+       0.1         -0.923         -0.883         -0.807         -0.795         -0.807
+      0.01         -0.967         -0.968         -0.964         -0.943         -0.964
+  FedProx
+     alpha        cv_norm    entropy_het      js_global      tv_global     js_uniform
+       1.0         -0.455         -0.456         -0.428         -0.406         -0.428
+       0.1         -0.911         -0.872         -0.799         -0.790         -0.799
+      0.01         -0.970         -0.972         -0.968         -0.952         -0.968
+
+  FedHAD (reported separately: H_k -> E_k/LR -> update -> cos_sim is a
+  causal path, so this correlation is NOT an independent validation)
+     alpha        cv_norm    entropy_het      js_global      tv_global     js_uniform
+       1.0         -0.527         -0.526         -0.494         -0.475         -0.494
+       0.1         -0.928         -0.889         -0.817         -0.806         -0.817
+      0.01         -0.970         -0.971         -0.967         -0.944         -0.967
+
+------------------------------------------------------------------------------
+PART 2 - FEMNIST (no drift telemetry; no correlation attempted)
+------------------------------------------------------------------------------
+Distinct writers: 2095 (10 campaign clients, 2085 held-out) | 472734 samples
+Empirical global prior: min=0.00271 max=0.05511 (uniform = 0.01613); max/min ratio = 20.4x
+Max deviation from uniform: 0.03898 | JS(global || uniform) = 0.15621
+
+Ranking disagreement CV (uniform ref) vs JS (global ref)
+  SCOPE: the aggregated pool of 2095 distinct writers - NOT the campaign's 10-client federation, which is analysed separately below.
+  Spearman between the two rankings          : 0.6909
+  Pool writers changing H_k tercile band     : 756/2095 (36.1%)
+  Pool writers whose E_k would differ        : 504/2095 (24.1%)  [quantile matching; budget preserved GLOBALLY over the pool, not within any subset]
+
+  Sensitivity of that pooled figure to how JS is placed on the CV scale:
+    quantile_matching     24.1%  budget 9226 vs 9226 (preserved)
+    min_max               54.7%  budget 10218 vs 9226 (INFLATED)
+    raw_js                57.6%  budget 10400 vs 9226 (INFLATED)
+    Only quantile matching isolates re-ranking; the others inflate the budget, conflating reordering with simply training more.
+
+Most prior-like writer overall (lowest JS): f1447_28 JS=0.0167, CV=0.1394 (CV percentile 22.0)
+Among the 5% most prior-like writers, the one the CV penalises most: f1136_31 JS=0.0379 (pct 3.9) vs CV=0.1535 (pct 37.4)
+Most extreme case that actually changes the epoch budget:
+  f3942_06: JS=0.0710 (percentile 28.1) but CV=0.1928 (percentile 63.8)
+  n_k=182, classes covered=61/62, E_k(CV)=4 vs E_k(JS)=5
+
+------------------------------------------------------------------------------
+PART 2b - COUNTERFACTUAL RANK REMAPPING WITHIN THE CAMPAIGN FEDERATION
+------------------------------------------------------------------------------
+Within-federation, budget-preserving rank remapping over the 10 writers the
+campaign actually uses as clients, evaluated on all 30 seeds. The exact
+multiset of E_k values assigned by the CV is preserved and redistributed by
+the JS ranking. This is a counterfactual reallocation, NOT an algorithm:
+it is not 'FedHAD-JS', nothing was trained, and it claims nothing about
+accuracy or drift.
+
+  Seeds evaluated                 : 30
+  Budget preserved in every seed  : True  (total epochs before = after in 30/30 seeds)
+  Total epochs per seed           : [43] (CV) vs [43] (remapped)
+  Writers changing E_k per seed   : mean 3.6 of 10 (min 2, max 4)
+  Spearman CV vs JS within the federation: mean 0.533 [0.224, 0.709]
+
+  Transition matrix over 300 (writer, seed) pairs:
+    E_k 4 -> 4 : 156  (unchanged)
+    E_k 4 -> 5 :  54  (CHANGED)
+    E_k 5 -> 4 :  54  (CHANGED)
+    E_k 5 -> 5 :  36  (unchanged)
+
+  Writers that change in at least one seed: 8 of 10
+  Most frequently reallocated writers (seeds affected):
+    f0900_42: 30/30 seeds
+    f0150_25: 24/30 seeds
+    f3844_11: 22/30 seeds
+    f1702_13: 18/30 seeds
+    f2402_75: 7/30 seeds
+
+Risk register: 10 entries (6 resolved, 1 residual, 3 documentation-only) -> tables/T9_risk_register.csv
+
+Writing figures and LaTeX...
+
+Files written under /home/tiago/GitHubProjects/fedhad-thesis-2/results_revision_prior
+  data/campaign_federation_remap.csv  (20,263 bytes)
+  data/dirichlet_client_metrics.csv  (21,466 bytes)
+  data/femnist_writer_metrics.csv  (362,677 bytes)
+  figures/F1_global_prior_vs_uniform.pdf  (20,173 bytes)
+  figures/F1_global_prior_vs_uniform.png  (97,622 bytes)
+  figures/F2_dirichlet_spearman_by_metric.pdf  (26,443 bytes)
+  figures/F2_dirichlet_spearman_by_metric.png  (146,703 bytes)
+  figures/F3_femnist_cv_vs_js.pdf  (51,029 bytes)
+  figures/F3_femnist_cv_vs_js.png  (181,967 bytes)
+  figures/F4_femnist_epoch_allocation.pdf  (19,386 bytes)
+  figures/F4_femnist_epoch_allocation.png  (65,551 bytes)
+  figures/F5_within_federation_remap.pdf  (19,018 bytes)
+  figures/F5_within_federation_remap.png  (109,145 bytes)
+  tables/T1_guard_validation.csv  (23,126 bytes)
+  tables/T1b_basis_cross_check.csv  (19,837 bytes)
+  tables/T2_dirichlet_spearman.csv  (5,412 bytes)
+  tables/T3_femnist_prior.csv  (3,143 bytes)
+  tables/T4_femnist_ranking_disagreement.csv  (535 bytes)
+  tables/T5_femnist_epoch_impact.csv  (62 bytes)
+  tables/T6_normalisation_sensitivity.csv  (226 bytes)
+  tables/T7_campaign_federation_remap.csv  (1,226 bytes)
+  tables/T8_federation_transition_matrix.csv  (72 bytes)
+  tables/T9_risk_register.csv  (2,563 bytes)
+  tables/federation_remap.tex  (1,520 bytes)
+  tables/prior_analysis.tex  (3,015 bytes)

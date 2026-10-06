@@ -1,0 +1,181 @@
+=== Resultado da Simulação Federada ===
+Data/Hora: 2026-07-21 20:13:52
+Teste: FedProx
+Dataset: FashionMNIST
+Device: cuda:0
+
+--- Parâmetros ---
+EXPERIMENT_TAG: test1_convergencia
+SEED: 59
+METODO: FedProx
+FEDPROX_MU: 0.01
+LOCAL_EPOCHS: 5
+LOCAL_LR: 0.01
+LOCAL_MOMENTUM: 0.9
+CLIENT_SETUP: 5
+NUM_CLIENTS: 5
+CLIENT_GPU_FRACTION: 0.2
+NUM_ROUNDS: 10
+BATCH_SIZE: 32
+COMMUNICATION_DELAY: 0.05
+PARTITIONING: DIRICHLET (alpha=0.01)
+ALPHA: 0.01
+Tempo total (s): 185.22
+
+--- History (loss, distributed) ---
+[(1, 2.1204247559550127),
+ (2, 1.5760307244724168),
+ (3, 1.3946758937677661),
+ (4, 1.3272667936365743),
+ (5, 1.2192243498420643),
+ (6, 1.1719768535639616),
+ (7, 1.0675920567026294),
+ (8, 1.0899874495629054),
+ (9, 1.0368924260223948),
+ (10, 1.0410764900588863)]
+
+--- History (loss, centralized) ---
+[(0, 2.3059858367919923),
+ (1, 2.1229304695129394),
+ (2, 1.5902949405670166),
+ (3, 1.41091533908844),
+ (4, 1.3377552074432373),
+ (5, 1.2328279357910157),
+ (6, 1.1892858958244323),
+ (7, 1.0827158012390137),
+ (8, 1.1006215050697328),
+ (9, 1.047987502861023),
+ (10, 1.0502048732757567)]
+
+--- History (metrics, distributed, evaluate) ---
+{'accuracy': [(1, 0.26213106553276644),
+              (2, 0.4657328664332166),
+              (3, 0.5202601300650325),
+              (4, 0.5492746373186593),
+              (5, 0.5659496414874103),
+              (6, 0.5731198932799734),
+              (7, 0.6019676504919126),
+              (8, 0.6031349007837252),
+              (9, 0.6013006503251626),
+              (10, 0.5992996498249125)],
+ 'loss': [(1, 2.1204247559550127),
+          (2, 1.5760307244724168),
+          (3, 1.3946758937677661),
+          (4, 1.3272667936365743),
+          (5, 1.2192243498420643),
+          (6, 1.1719768535639616),
+          (7, 1.0675920567026294),
+          (8, 1.0899874495629054),
+          (9, 1.0368924260223948),
+          (10, 1.0410764900588863)]}
+
+--- History (metrics, centralized) ---
+{'accuracy': [(0, 0.1),
+              (1, 0.2553),
+              (2, 0.4693),
+              (3, 0.5227),
+              (4, 0.5498),
+              (5, 0.5658),
+              (6, 0.5741),
+              (7, 0.6031),
+              (8, 0.6062),
+              (9, 0.6052),
+              (10, 0.5999)],
+ 'loss': [(0, 2.3059858367919923),
+          (1, 2.1229304695129394),
+          (2, 1.5902949405670166),
+          (3, 1.41091533908844),
+          (4, 1.3377552074432373),
+          (5, 1.2328279357910157),
+          (6, 1.1892858958244323),
+          (7, 1.0827158012390137),
+          (8, 1.1006215050697328),
+          (9, 1.047987502861023),
+          (10, 1.0502048732757567)]}
+
+--- History (metrics, distributed, fit) ---
+{'avg_flops_per_client_round': [(1, 91256429520.0),
+                                (2, 91256429520.0),
+                                (3, 91256429520.0),
+                                (4, 91256429520.0),
+                                (5, 91256429520.0),
+                                (6, 91256429520.0),
+                                (7, 91256429520.0),
+                                (8, 91256429520.0),
+                                (9, 91256429520.0),
+                                (10, 91256429520.0)],
+ 'total_flops_round': [(1, 456282147600),
+                       (2, 456282147600),
+                       (3, 456282147600),
+                       (4, 456282147600),
+                       (5, 456282147600),
+                       (6, 456282147600),
+                       (7, 456282147600),
+                       (8, 456282147600),
+                       (9, 456282147600),
+                       (10, 456282147600)]}
+
+--- Estatísticas de Custo Computacional (FLOPs) ---
+FLOPS por amostra (forward apenas): 5.633e+05 (0.6 MFLOPs)
+FLOPS por amostra (forward + backward, fator 3x): 1.690e+06 (1.7 MFLOPs)
+(Convenção: thop mede MACs; FLOPs = 2 × MACs; passe completo = 3 × forward.)
+
+Total acumulado da execução: 4.563 TFLOPs
+Média por rodada: 456.282 GFLOPs
+Min/Max por rodada: 456.282 GFLOPs / 456.282 GFLOPs | Desvio padrão: 0 FLOPs
+
+FLOPs por cliente (acumulado em 10 rodadas):
+  Cliente 0: 1.813 TFLOPs (21455 amostras × ~5 épocas × 10 rodadas)
+  Cliente 1: 454.736 GFLOPs (5382 amostras × ~5 épocas × 10 rodadas)
+  Cliente 2: 890.461 GFLOPs (10539 amostras × ~5 épocas × 10 rodadas)
+  Cliente 3: 36.163 GFLOPs (428 amostras × ~5 épocas × 10 rodadas)
+  Cliente 4: 1.369 TFLOPs (16199 amostras × ~5 épocas × 10 rodadas)
+
+Eficiência: 0.5999 acurácia / 4.563 TFLOPs = 0.1315 (acc/TFLOP)
+           = 13.15 pontos percentuais por TFLOP
+
+--- Rounds-to-Target (Acurácia Centralizada) ---
+Target 50%: round 3
+Target 60%: round 7
+Target 70%: não atingido em 10 rounds
+Target 80%: não atingido em 10 rounds
+
+--- FLOPs-to-Target ---
+Target 50%: 1.369 TFLOPs (round 3)
+Target 60%: 3.194 TFLOPs (round 7)
+Target 70%: não atingido em 10 rounds
+Target 80%: não atingido em 10 rounds
+
+--- Custo de Comunicação ---
+Tamanho do modelo: 177.704 KB (44426 parâmetros)
+Bytes por rodada: 1.777 MB (5 clientes × 2 × 177.704 KB)
+Bytes acumulados na execução: 17.770 MB (10 rounds)
+Bytes até atingir target 50%: 5.331 MB (round 3)
+Bytes até atingir target 60%: 12.439 MB (round 7)
+Bytes até atingir target 70%: não atingido em 10 rounds
+Bytes até atingir target 80%: não atingido em 10 rounds
+
+--- Consumo de Energia (CodeCarbon) ---
+País detectado: Brazil (BRA)
+Intensidade de carbono da rede: 0.0983 kg CO2eq/kWh
+GPU: 1 x NVIDIA A40
+CPU: AMD EPYC 9354P 32-Core Processor
+
+Energia total consumida: 0.010671 kWh
+  - GPU: 0.006011 kWh (56.3%)
+  - CPU: 0.001307 kWh (12.3%)
+  - RAM: 0.003352 kWh (31.4%)
+Emissões de CO2 equivalente: 1.049426e-03 kg CO2eq
+Energia por TFLOP processado: 2.339e-03 kWh/TFLOP
+Emissões por TFLOP processado: 2.300e-04 kg CO2eq/TFLOP
+Energia por ponto percentual de acurácia final: 1.779e-04 kWh/pp
+Emissões por ponto percentual de acurácia final: 1.749e-05 kg CO2eq/pp
+
+--- Diagnóstico de Medição (CodeCarbon) ---
+pynvml disponível: True
+GPUs detectadas: 1
+Modo de tracking: machine
+Intervalo de medição: 5s
+Status da medição de GPU: OK (68.39 W na leitura de diagnóstico)
+
+Nota: o consumo absoluto de energia é dependente do hardware. A comparação válida é entre métodos executados na MESMA máquina.

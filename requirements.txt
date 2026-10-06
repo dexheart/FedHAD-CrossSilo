@@ -1,0 +1,53 @@
+# ==========================================================================
+# Dependências para reproduzir os experimentos de Aprendizado Federado
+# (FedAVG / FedAvgM / FedProx / FedNova / SCAFFOLD / FedHAD) — datasets MNIST,
+# FashionMNIST, CIFAR10 e FEMNIST (nativo-federado, via flwr-datasets), e para
+# regenerar as tabelas e figuras a partir de results/ (analysis/) e rodar os testes
+# (sanity_tests/).
+#
+# Versões: ambiente do servidor (AMD EPYC 9354P / NVIDIA A40), onde rodaram as
+# baterias de controle; os registros dessas execuções gravam Python 3.12.3,
+# torch 2.5.1+cu121, flwr 1.31.0 e numpy 2.5.0.
+#
+# Testado com: Python 3.12.3
+#
+# Instalação (recomenda-se um ambiente virtual):
+#     python -m venv env_flwr_pt
+#     # Windows:  env_flwr_pt\Scripts\activate
+#     # Linux/Mac: source env_flwr_pt/bin/activate
+#     pip install -r requirements.txt
+#
+# --------------------------------------------------------------------------
+# PyTorch + CUDA: a linha --extra-index-url abaixo permite baixar a build de
+# GPU (CUDA 12.1). Para CPU-only, remova "+cu121" de torch/torchvision e
+# remova a linha --extra-index-url (o pip pegará as builds de CPU do PyPI).
+# --------------------------------------------------------------------------
+--extra-index-url https://download.pytorch.org/whl/cu121
+
+# --- Deep learning ---
+torch==2.5.1+cu121
+torchvision==0.20.1+cu121
+
+# --- Aprendizado federado (simulação via Ray) ---
+flwr[simulation]==1.31.0
+ray==2.55.1
+
+# --- Datasets federados (FEMNIST / LEAF, baixados do HuggingFace Hub) ---
+flwr-datasets[vision]==0.6.0
+datasets==4.8.5
+
+# --- Telemetria de custo computacional (FLOPs) e energia (CodeCarbon) ---
+thop==0.1.1.post2209072238
+codecarbon==3.2.8
+nvidia-ml-py==13.610.43
+
+# --- Núcleo numérico / utilidades (normalmente puxadas como dependências,
+#     fixadas aqui para reprodutibilidade) ---
+numpy==2.5.0
+pillow==12.2.0
+
+# --- Análises, tabelas e figuras (analysis/) e testes (sanity_tests/) ---
+pandas==3.0.3
+scipy==1.18.1
+matplotlib==3.11.1
+pytest==9.1.1

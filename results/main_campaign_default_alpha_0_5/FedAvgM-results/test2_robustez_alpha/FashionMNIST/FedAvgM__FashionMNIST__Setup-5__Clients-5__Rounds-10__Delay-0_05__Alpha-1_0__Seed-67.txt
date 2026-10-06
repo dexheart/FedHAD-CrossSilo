@@ -1,0 +1,190 @@
+=== Resultado da Simulação Federada ===
+Data/Hora: 2026-07-03 07:10:37
+Teste: FedAvgM
+Dataset: FashionMNIST
+Device: cuda:0
+
+--- Parâmetros ---
+EXPERIMENT_TAG: test2_robustez_alpha
+SEED: 67
+METODO: FedAvgM
+SERVER_MOMENTUM: 0.9
+SERVER_LR: 1.0
+LOCAL_EPOCHS: 5
+LOCAL_LR: 0.01
+LOCAL_MOMENTUM: 0.9
+CLIENT_SETUP: 5
+NUM_CLIENTS: 5
+CLIENT_GPU_FRACTION: 0.2
+NUM_ROUNDS: 10
+BATCH_SIZE: 32
+COMMUNICATION_DELAY: 0.05
+PARTITIONING: DIRICHLET (alpha=1.0)
+ALPHA: 1.0
+Tempo total (s): 144.80
+
+--- History (loss, distributed) ---
+[(1, 0.687588408224102),
+ (2, 1.2664074951834692),
+ (3, 1.6811295448596952),
+ (4, 0.6138679060078033),
+ (5, 0.5082535376116616),
+ (6, 0.526372759495653),
+ (7, 0.47408787461644675),
+ (8, 0.68499473548341),
+ (9, 0.7843152498424163),
+ (10, 0.6106204488127555)]
+
+--- History (loss, centralized) ---
+[(0, 2.305040698623657),
+ (1, 0.6871493603229523),
+ (2, 1.2980478141874074),
+ (3, 1.8230701275046195),
+ (4, 0.675931793937087),
+ (5, 0.5153382708311081),
+ (6, 0.5197171146631241),
+ (7, 0.47726950249671934),
+ (8, 0.7258061048045754),
+ (9, 0.8516993810713291),
+ (10, 0.6582323049783707)]
+
+--- History (metrics, distributed, evaluate) ---
+{'accuracy': [(1, 0.783725195931299),
+              (2, 0.8570952142738035),
+              (3, 0.8681007170251792),
+              (4, 0.8589294647323662),
+              (5, 0.8204102051025512),
+              (6, 0.8115724528931132),
+              (7, 0.8567617141904286),
+              (8, 0.8655994663998666),
+              (9, 0.864098716024679),
+              (10, 0.8580957145239286)],
+ 'loss': [(1, 0.687588408224102),
+          (2, 1.2664074951834692),
+          (3, 1.6811295448596952),
+          (4, 0.6138679060078033),
+          (5, 0.5082535376116616),
+          (6, 0.526372759495653),
+          (7, 0.47408787461644675),
+          (8, 0.68499473548341),
+          (9, 0.7843152498424163),
+          (10, 0.6106204488127555)]}
+
+--- History (metrics, centralized) ---
+{'accuracy': [(0, 0.1),
+              (1, 0.7807),
+              (2, 0.8564),
+              (3, 0.867),
+              (4, 0.8484),
+              (5, 0.8221),
+              (6, 0.8173),
+              (7, 0.8551),
+              (8, 0.8697),
+              (9, 0.8629),
+              (10, 0.852)],
+ 'loss': [(0, 2.305040698623657),
+          (1, 0.6871493603229523),
+          (2, 1.2980478141874074),
+          (3, 1.8230701275046195),
+          (4, 0.675931793937087),
+          (5, 0.5153382708311081),
+          (6, 0.5197171146631241),
+          (7, 0.47726950249671934),
+          (8, 0.7258061048045754),
+          (9, 0.8516993810713291),
+          (10, 0.6582323049783707)]}
+
+--- History (metrics, distributed, fit) ---
+{'avg_flops_per_client_round': [(1, 91256429520.0),
+                                (2, 91256429520.0),
+                                (3, 91256429520.0),
+                                (4, 91256429520.0),
+                                (5, 91256429520.0),
+                                (6, 91256429520.0),
+                                (7, 91256429520.0),
+                                (8, 91256429520.0),
+                                (9, 91256429520.0),
+                                (10, 91256429520.0)],
+ 'total_flops_round': [(1, 456282147600),
+                       (2, 456282147600),
+                       (3, 456282147600),
+                       (4, 456282147600),
+                       (5, 456282147600),
+                       (6, 456282147600),
+                       (7, 456282147600),
+                       (8, 456282147600),
+                       (9, 456282147600),
+                       (10, 456282147600)]}
+
+--- Estatísticas de Custo Computacional (FLOPs) ---
+FLOPS por amostra (forward apenas): 5.633e+05 (0.6 MFLOPs)
+FLOPS por amostra (forward + backward, fator 3x): 1.690e+06 (1.7 MFLOPs)
+(Convenção: thop mede MACs; FLOPs = 2 × MACs; passe completo = 3 × forward.)
+
+Total acumulado da execução: 4.563 TFLOPs
+Média por rodada: 456.282 GFLOPs
+Min/Max por rodada: 456.282 GFLOPs / 456.282 GFLOPs | Desvio padrão: 0 FLOPs
+
+FLOPs por cliente (acumulado em 10 rodadas):
+  Cliente 0: 1.101 TFLOPs (13035 amostras × ~5 épocas × 10 rodadas)
+  Cliente 1: 895.024 GFLOPs (10593 amostras × ~5 épocas × 10 rodadas)
+  Cliente 2: 1.215 TFLOPs (14378 amostras × ~5 épocas × 10 rodadas)
+  Cliente 3: 807.237 GFLOPs (9554 amostras × ~5 épocas × 10 rodadas)
+  Cliente 4: 544.382 GFLOPs (6443 amostras × ~5 épocas × 10 rodadas)
+
+Eficiência: 0.8520 acurácia / 4.563 TFLOPs = 0.1867 (acc/TFLOP)
+           = 18.67 pontos percentuais por TFLOP
+
+--- Rounds-to-Target (Acurácia Centralizada) ---
+Target 50%: round 1
+Target 60%: round 1
+Target 70%: round 1
+Target 80%: round 2
+
+--- FLOPs-to-Target ---
+Target 50%: 456.282 GFLOPs (round 1)
+Target 60%: 456.282 GFLOPs (round 1)
+Target 70%: 456.282 GFLOPs (round 1)
+Target 80%: 912.564 GFLOPs (round 2)
+
+--- Custo de Comunicação ---
+Tamanho do modelo: 177.704 KB (44426 parâmetros)
+Bytes por rodada: 1.777 MB (5 clientes × 2 × 177.704 KB)
+Bytes acumulados na execução: 17.770 MB (10 rounds)
+Bytes até atingir target 50%: 1.777 MB (round 1)
+Bytes até atingir target 60%: 1.777 MB (round 1)
+Bytes até atingir target 70%: 1.777 MB (round 1)
+Bytes até atingir target 80%: 3.554 MB (round 2)
+
+--- Consumo de Energia (CodeCarbon) ---
+País detectado: Brazil (BRA)
+Intensidade de carbono da rede: 0.0983 kg CO2eq/kWh
+GPU: 1 x NVIDIA RTX A1000
+CPU: Intel(R) Core(TM) i7-14700
+
+Energia total consumida: 0.001190 kWh
+  - GPU: 0.000000 kWh (0.0%)
+  - CPU: 0.000459 kWh (38.5%)
+  - RAM: 0.000732 kWh (61.5%)
+Emissões de CO2 equivalente: 1.170667e-04 kg CO2eq
+
+GPU (ESTIMATIVA de fallback — potência real indisponível via NVML):
+  Energia GPU estimada: 0.000719 kWh (TDP=35.0 W × utilização média 49.2%)
+  Energia total AJUSTADA (CPU+RAM medidos + GPU estimada): 0.001909 kWh
+  AVISO: valor ESTIMADO (não medido). Mantenha o MESMO GPU_TDP_WATTS ao comparar métodos; ajuste a constante conforme a sua GPU.
+Energia por TFLOP processado: 2.609e-04 kWh/TFLOP
+Emissões por TFLOP processado: 2.566e-05 kg CO2eq/TFLOP
+Energia por ponto percentual de acurácia final: 1.397e-05 kWh/pp
+Emissões por ponto percentual de acurácia final: 1.374e-06 kg CO2eq/pp
+
+--- Diagnóstico de Medição (CodeCarbon) ---
+pynvml disponível: True
+GPUs detectadas: 1
+Modo de tracking: machine
+Intervalo de medição: 5s
+Status da medição de GPU: leitura de potência falhou (Not Supported)
+
+ATENÇÃO: GPU com 0.0 kWh na medição direta do CodeCarbon.
+  -> Uma ESTIMATIVA de energia da GPU (TDP×utilização) foi fornecida acima, pois o NVML desta GPU não expõe a potência real (NVMLError_NotSupported).
+
+Nota: o consumo absoluto de energia é dependente do hardware. A comparação válida é entre métodos executados na MESMA máquina.

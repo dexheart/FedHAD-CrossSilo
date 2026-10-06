@@ -1,0 +1,31 @@
+\begin{table}[t]
+\centering
+\caption{Correlation between $H_k$ and cosine similarity, by method and $\alpha$ (Spearman as the primary statistic; Pearson reported alongside).}
+\label{tab:d1-correlacoes}
+\begin{tabular}{llrrrrr}
+\toprule
+Method & $\alpha$ & $n$ & Spearman $\rho$ & Pearson $\rho$ & $p$ (Spearman) & Spearman $\rho$ (incl. empty) \\
+\midrule
+FedAvg & 1.00 & 500 & -0.445 & -0.475 & 1.10e-25 & -0.445 \\
+FedAvg & 0.10 & 500 & -0.908 & -0.872 & 1.09e-190 & -0.908 \\
+FedAvg & 0.01 & 470 & -0.962 & -0.922 & 1.95e-265 & -0.640 \\
+FedAvg & agregado & 1470 & -0.717 & -0.747 & 6.63e-232 & -0.617 \\
+FedAvgM & 1.00 & 500 & -0.469 & -0.492 & 1.01e-28 & -0.469 \\
+FedAvgM & 0.10 & 500 & -0.923 & -0.892 & 2.29e-209 & -0.923 \\
+FedAvgM & 0.01 & 470 & -0.968 & -0.938 & 6.44e-283 & -0.642 \\
+FedAvgM & agregado & 1470 & -0.732 & -0.774 & 5.44e-247 & -0.631 \\
+FedProx & 1.00 & 500 & -0.455 & -0.487 & 6.13e-27 & -0.455 \\
+FedProx & 0.10 & 500 & -0.911 & -0.893 & 2.91e-194 & -0.911 \\
+FedProx & 0.01 & 470 & -0.971 & -0.951 & 1.96e-291 & -0.649 \\
+FedProx & agregado & 1470 & -0.717 & -0.788 & 6.39e-232 & -0.617 \\
+FedHAD & 1.00 & 500 & -0.527 & -0.557 & 3.79e-37 & -0.527 \\
+FedHAD & 0.10 & 500 & -0.928 & -0.896 & 3.26e-215 & -0.928 \\
+FedHAD & 0.01 & 470 & -0.970 & -0.927 & 3.94e-291 & -0.650 \\
+FedHAD & agregado & 1470 & -0.746 & -0.785 & 2.76e-261 & -0.645 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item 3 (alpha, seed, client_id) pairs with n_k=0 excluded from the analysis (not from the experiment): (0.01,46,1), (0.01,48,4), (0.01,51,2) -- 120 of 6000 rows, across all four methods, to preserve pairing. These clients remained in the federation contributing weight n_k/N=0; H_k=0/cos_sim=0/update_norm=0 are sentinel values, not measurements. The $H_k$-cosine relationship is non-linear (cosine similarity drops sharply above $H_k\approx0.6$ and is nearly flat below it); Spearman is therefore the primary statistic, with Pearson reported only for reference.
+\end{tablenotes}
+\end{table}
