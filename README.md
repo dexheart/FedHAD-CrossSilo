@@ -188,13 +188,14 @@ FedAvg, FedAvgM and FedProx.
 | CIFAR-10, 50 rounds, α = 0.01 | 65.81 | 64.97 (FedProx) | +0.84 | 1313.9 / 2035.2 | −35% |
 | FEMNIST, 10 rounds | 65.11 | 65.94 (FedProx) | −0.83 | 11.13 / 12.39 | −10% |
 
-- **Computation:** FedHAD performs 19% to 35% less local training in every configuration, and the
-  reduction grows with the imbalance. This is a reduction in network operations, not in time: on
-  CIFAR-10, FedHAD takes 458.1 s against 563.7 s for FedProx and 387.6 s for FedAvg.
+- **Computation:** FedHAD performs 19% to 35% less local training on CIFAR-10 (about 10% on
+  FEMNIST), and the reduction grows with the imbalance. This is a reduction in network operations,
+  not in time: on CIFAR-10, FedHAD takes 458.1 s against 563.7 s for FedProx and 387.6 s for FedAvg.
 - **Extreme skew (α = 0.01):** FedHAD has the highest mean accuracy and the smallest dispersion. The
   advantage over FedProx, FedNova and FedAvgM survives the Holm adjustment; the advantage over FedAvg
   does not (p = 0.026, p_H = 0.157).
-- **Moderate skew:** FedHAD stays within 0.2 points of the best baseline other than SCAFFOLD.
+- **Moderate skew:** at α = 1.0 and 0.5, FedHAD stays within 0.2 points of the best baseline other
+  than SCAFFOLD; at α = 0.1 it is 0.50 points behind FedAvg.
 - **MNIST:** FedAvg is more accurate at every level; there is little drift to mitigate in a task that
   every method solves almost equally well.
 - **FEMNIST:** at 10 rounds FedHAD is 0.83 points behind FedProx (a detected difference). At 50
@@ -254,8 +255,8 @@ seed-to-seed deviation. Cost is governed almost entirely by `λ_E` (404.0, 325.3
 ## 7. What the work concludes
 
 - **Against baselines in the common configuration**, FedHAD offers an accuracy–computation
-  trade-off: comparable accuracy with 19% to 35% less local training, and the highest accuracy under
-  extreme skew on CIFAR-10.
+  trade-off: comparable accuracy with 19% to 35% less local training on CIFAR-10 (about 10% on
+  FEMNIST), and the highest accuracy under extreme skew on CIFAR-10.
 - **Against a tuned baseline**, it is neither more accurate nor cheaper. What it delivers is an
   operating point comparable to that of a validation search, obtained **in a single run and without
   the search**, from local statistics and without extra communication. In this study the search cost
@@ -271,7 +272,7 @@ The repository separates **training code** (`algoritmos/`), **runners** (`runner
 code** (`analysis/`) and **data** (`results/`). Every runner writes only to `results/`.
 
 ```
-fedhad-thesis-2/
+FedHAD-CrossSilo/
 ├── runners/                       # one runner per experiment (run from the repository root)
 ├── algoritmos/                    # training code
 │   ├── *_Final.py                 # the six methods of the main campaign

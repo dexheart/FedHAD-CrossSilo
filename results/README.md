@@ -40,7 +40,7 @@ when they were executed (read by the parsers, so they are not renamed):
 | Folder | Experiment | Manuscript |
 |---|---|---|
 | `test1_convergencia` | Base operating point: accuracy and loss over rounds | §6.2, Figs. 4–5 |
-| `test2_robustez_alpha` | Heterogeneity sweep, α ∈ {1.0, 0.5, 0.1, 0.01} | §6.3, Table 8, Figs. 6–8 |
+| `test2_robustez_alpha` | Heterogeneity sweep, α ∈ {1.0, 0.1, 0.01} (α = 0.5 comes from `test1_convergencia`) | §6.3, Table 8, Figs. 6–8 |
 | `test3_comunicacao` | Artificial communication delay | §6.6, Fig. 11 |
 | `test4_clientes` | Client scaling (3, 5, 10 clients) | §6.6, Fig. 12 |
 | `test5_ablacao` | Historical 8-arm ablation (exploratory; superseded by `component_analysis_ablation/`) | — |
