@@ -55,7 +55,10 @@ def paired(a, b, label):
 def main():
     tel, fps = load()
     # ---- per client x round integrity: executed quantities ----
-    tel["processed_examples"] = tel.minibatch_updates * BATCH
+    # Examples actually processed: training loaders use drop_last=(n_train > 1), so every update
+    # processes a full batch of BATCH examples, except for a client with a single training sample,
+    # whose only (incomplete) batch is kept and processes one example per update.
+    tel["processed_examples"] = tel.minibatch_updates * np.minimum(BATCH, tel.n_k)
     tel["n_batches_implied"] = tel.minibatch_updates / tel.epochs
     tel["flops_full_per_sample"] = tel.flops_locais / (tel.n_k * tel.epochs)
     per_run = tel.groupby(["variant", "alpha", "seed"]).agg(
