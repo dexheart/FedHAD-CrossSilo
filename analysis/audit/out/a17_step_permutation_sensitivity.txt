@@ -1,0 +1,25 @@
+Clients with 0 < n_k < 32 in the permuted arm (round 1):
+ alpha  seed  client_id  n_k  n_batches  tau_original  tau_received  examples_processed
+  0.01    55          2    1          1             2          2132                2132
+  0.01    69          3    1          1             2           585                 585
+
+Seeds whose processed examples differ between arms:
+  alpha  seed  examples_mismatch_pct  diff_acc_pp
+  0.01    55             -40.827305        24.53
+  0.01    69             -11.739221         5.29
+
+                      n    mean   ci_lo   ci_hi      dz  wins  losses       p  p_holm
+primary 0.01      30.0  3.9607  2.5830  5.7730  0.8485  28.0     2.0  0.0000  0.0000
+primary 0.1       30.0  1.8570  0.9946  2.7603  0.7452  22.0     8.0  0.0002  0.0002
+sensitivity 0.01  28.0  3.1786  2.2750  4.2004  1.1986  26.0     2.0  0.0000  0.0000
+
+Retained seeds, accuracy mean ± sd: full 55.01 ± 3.98, permuted 51.83 ± 4.93
+sum p tau ratio median [min, max]: 0.72 [0.36, 0.92]
+
+Spearman(paired difference, ratio), per level (Section 6.11):
+  alpha=0.01: vs sum p*tau rho=-0.40 (p=0.0294); vs sum p*eta*tau rho=-0.40 (p=0.0265), median ratio p*eta*tau=0.65
+  alpha=0.1: vs sum p*tau rho=-0.59 (p=0.0006); vs sum p*eta*tau rho=-0.63 (p=0.0002), median ratio p*eta*tau=0.70
+                        updates   examples  tflops_exec
+arm                                                    
+full_fedhad             45045.0  1441440.0   260.748885
+step_permuted_lrclient  45045.0  1441440.0   260.748885

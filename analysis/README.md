@@ -8,7 +8,7 @@ project environment (`env_flwr_pt/bin/python ...`). Folder names mirror the fold
 | Folder | What it does | Writes to |
 |---|---|---|
 | `main_campaign/` | Parses every `.txt` report of the main campaign (`analisar_resultados.py`), draws the figures of tests 1–8 and the paired Wilcoxon table (`figuras_artigo.py`); `limpar_corrompidos.py` lists/removes crashed runs (FLOPs = 0) before a re-run | `results/main_campaign_summaries/` |
-| `audit/` | Independent recomputation of the numbers of the manuscript, one script per question (`a01`–`a15`; `common.py` holds its own report parser) | `analysis/audit/out/` |
+| `audit/` | Independent recomputation of the numbers of the manuscript, one script per question (`a01`–`a18`; `common.py` holds its own report parser) | `analysis/audit/out/` |
 | `revision_consolidated_tables_figures/` | Consolidated tables and figures: summary across campaigns, FedNova comparison, 50-round study, FEMNIST | `results/revision_consolidated_tables_figures/` |
 | `component_analysis_ablation/` | Contrasts of the controlled component analysis; size/heterogeneity analysis of the partitions | `results/component_analysis_ablation/` |
 | `tuned_controls_and_step_permutation/` | Step-preserving permutation and tuning phase (`analyze_step_permutation_and_tuning.py`); pre-registered evaluation of the tuned FedProx (`analyze_tuned_evaluate.py`) | `results/step_preserving_permutation/analysis/`, `results/tuned_controls_fedprox_validation/evaluate_analysis/` |
@@ -53,9 +53,12 @@ Labels are the `\label{}` keys of `PaperJNCA_Revision/.../Revised manuscript.tex
 | `tab:ablation` | `component_analysis_ablation/analyze_ablation.py`; Holm from `audit/a06_stats_holm.py` | `results/component_analysis_ablation/tables/contrasts_official.csv` |
 | Sensitivity of the component analysis without empty clients (Section 6.10) | `audit/a03b_empty_clients.py`, `audit/a11_ablation_sensitivity_empty.py` | `audit/out/a03b_*`, `audit/out/a11_*` |
 | `tab:revision_validation` | `tuned_controls_and_step_permutation/analyze_step_permutation_and_tuning.py` → `audit/a14_revision_controls_tables.py` | `audit/out/a14_validation.tex` |
-| `tab:step_permutation` | `tuned_controls_and_step_permutation/analyze_step_permutation_and_tuning.py` → `audit/a14_revision_controls_tables.py` | `audit/out/a14_step_permutation.tex` |
-| `tab:lr_uniform` | `lr_uniform_control/analyze_lr_uniform_control.py` → `audit/a14_revision_controls_tables.py` | `audit/out/a14_lr_uniform.tex` |
-| `tab:tuned_controls` | `tuned_controls_and_step_permutation/analyze_tuned_evaluate.py` → `audit/a14_revision_controls_tables.py` | `audit/out/a14_tuned.tex` |
+| `tab:step_permutation` | `tuned_controls_and_step_permutation/analyze_step_permutation_and_tuning.py` → `audit/a14_revision_controls_tables.py` | `audit/out/a14_step_permutation.tex` (layout of v1.0.1); the sensitivity block without seeds 55 and 69 added in v1.0.2 comes from `audit/a17_step_permutation_sensitivity.py` |
+| `tab:lr_uniform` | `lr_uniform_control/analyze_lr_uniform_control.py` → `audit/a14_revision_controls_tables.py` | `audit/out/a14_lr_uniform.tex` (layout of v1.0.1; in v1.0.2 the 90% CI column moved to `tab:equivalence`) |
+| `tab:tuned_controls` | `tuned_controls_and_step_permutation/analyze_tuned_evaluate.py` → `audit/a14_revision_controls_tables.py` | `audit/out/a14_tuned.tex` (layout of v1.0.1; in v1.0.2 the 90% CI column moved to `tab:equivalence` and Section 6.11) |
+| `tab:equivalence` (equivalence and non-inferiority decisions, registered and multiplicity-adjusted; smallest δ) | `audit/a16_equivalence_multiplicity.py` | `audit/out/a16_equivalence_multiplicity.csv` |
+| `tab:step_permutation`, sensitivity block; Section 6.11, seeds 55 and 69 and Spearman correlations | `audit/a17_step_permutation_sensitivity.py` (prints to the console) | `audit/out/a17_step_permutation_sensitivity.txt` |
+| Section 5.6, run-to-run variation of FedHAD across the control batteries | `audit/a18_fedhad_run_to_run.py` | `audit/out/a18_fedhad_run_to_run.csv` |
 | `tab:global_gradient` | `global_gradient_diagnostic/analyze_global_gradient.py` → `audit/a14_revision_controls_tables.py` | `audit/out/a14_global_gradient.tex` |
 | `fig:sensitivity`, `tab:sensitivity` | `audit/a12_sensitivity_grid_reinstalled.py` (draws with the routine of `main_campaign/figuras_artigo.py`) | `audit/out/a12_grid_*.csv`; the figure is written into the manuscript's `figs/test6/`, with a copy in `results/main_campaign_summaries/sensitivity_grid_reexecuted/` |
 | Numbers of Section 3 (objective reweighting by local steps) | `audit/a09_epochs_vs_steps.py` | `audit/out/a09_summary.txt` |
@@ -74,6 +77,19 @@ tests 1 to 4 and of the efficiency figures in the manuscript are a rendering wit
 higher resolution and no subtitle line that no script in this repository reproduces exactly; their
 data are those of the listed outputs.
 
+## Note on recomputed p-values (v1.0.2)
+
+The scripts `a16`–`a18` were added in v1.0.2 and were run with SciPy 1.11.4, whereas the
+environment of the artifact pins SciPy 1.18.1 (`requirements.txt`). The exact null distribution of
+the Wilcoxon signed-rank test differs between these versions for some sample sizes, so a recomputed
+p-value may differ from the value reported in the manuscript in the third decimal place. Two such
+cases are known: FedHAD − tuned FedProx at α = 0.1, raw p = 0.135 and Holm-adjusted p = 0.269 with
+SciPy 1.11.4, against 0.128 and 0.256 as reported; and the step-preserving permutation at α = 0.1,
+raw p = 0.0002 against 0.0005 as reported. No decision in the manuscript depends on these
+differences. The bootstrap intervals use a fixed generator seed (20260930) and are unaffected.
+`a17` prints its results; its saved output is `audit/out/a17_step_permutation_sensitivity.txt`
+(`python analysis/audit/a17_step_permutation_sensitivity.py > analysis/audit/out/a17_step_permutation_sensitivity.txt`).
+
 ## Order to rebuild everything
 
 ```
@@ -83,7 +99,7 @@ python analysis/tuned_controls_and_step_permutation/analyze_tuned_evaluate.py
 python analysis/lr_uniform_control/analyze_lr_uniform_control.py
 python analysis/global_gradient_diagnostic/analyze_global_gradient.py
 python analysis/component_analysis_ablation/analyze_ablation.py --mode official
-for f in analysis/audit/a*.py; do python $f; done             # a01 ... a15, in name order
+for f in analysis/audit/a*.py; do python $f; done             # a01 ... a18, in name order
 python analysis/revision_consolidated_tables_figures/consolidate.py   # then the other scripts of that folder
 python analysis/main_campaign/figuras_artigo.py
 python analysis/drift_diagnostics_10seeds/analise_1_1.py
